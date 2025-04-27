@@ -1,0 +1,27 @@
+{
+    "organizeImports": {
+        "enabled": true
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true
+        }
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 2,
+        "lineEnding": "lf"
+    },
+    "javascript": {
+        "formatter": {
+            "enabled": true,
+            "bracketSameLine": true,
+            "bracketSpacing": true,
+            "quoteStyle": "double",
+            "semicolons": "always",
+            "lineWidth": 90
+        }
+    }
+}
