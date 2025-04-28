@@ -1,8 +1,11 @@
 {
-  "name": "main",
-  "module": "index.ts",
+  "name": "swisscounts-main-service",
   "type": "module",
+  "main": "/src/index.ts",
   "private": true,
+  "scripts": {
+    "start": "bun ./src/index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -11,6 +14,7 @@
   },
   "dependencies": {
     "@types/express": "^5.0.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongoose": "^8.14.0"
   }
 }

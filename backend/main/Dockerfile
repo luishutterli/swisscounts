@@ -12,4 +12,4 @@ ENV NODE_ENV=production
 
 USER bun
 EXPOSE 3000
-CMD ["bun", "index.ts"]
+CMD ["bun", "start"]
