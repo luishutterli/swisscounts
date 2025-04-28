@@ -1,0 +1,25 @@
+services:
+  main:
+    build: ./backend/main/
+    ports:
+      - 3000:3000
+    networks:
+      - internal
+    depends_on:
+      - db2_mongodb
+
+  db2_mongodb:
+    image: mongodb/mongodb-community-server:7.0.0-ubi8
+    ports:
+      - 27017:27017 # For development only
+    networks:
+      - internal
+    volumes:
+      - db2_mongodb_data:/data/db
+
+networks:
+  internal:
+    driver: bridge
+volumes:
+  db2_mongodb_data:
+    driver: local
