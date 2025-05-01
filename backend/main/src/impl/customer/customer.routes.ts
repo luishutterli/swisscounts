@@ -1,15 +1,15 @@
-import { Router, type Request } from "express";
+import { Router, type Request, type Response } from "express";
+import { createCustomer, getCustomers, updateCustomer } from "./customer.controller";
 
 const router = Router();
 
-router.get("/", (req: Request<{org: number}>, res) => {
-  // TODO: List all customers
+// TODO: Why is this required on the last two but not on the first route?
+router.get("/", getCustomers);
+router.post("/", async (req: Request<{ org: number }>, res: Response) => {
+  await createCustomer(req, res);
 });
-router.post("/", (req: Request<{ org: number }>, res) => {
-  // TODO: Create a new customer
-});
-router.patch("/:id", (req: Request<{ org: number; id: string }>, res) => {
-  // TODO: Update a customer
+router.patch("/:id", async (req: Request<{ org: number; id: string }>, res: Response) => {
+  await updateCustomer(req, res);
 });
 
 export { router as customerRoutes };

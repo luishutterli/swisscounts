@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-interface IAddress {
+export interface IAddress {
   street: string;
   city: string;
   canton: string;
@@ -46,5 +46,5 @@ const customerSchema = new Schema<ICustomer>({
   },
 });
 
-const CustomerModel = model<ICustomer>("Customer", customerSchema);
+const CustomerModel = model<ICustomer>("Customers", customerSchema);
 export default CustomerModel;

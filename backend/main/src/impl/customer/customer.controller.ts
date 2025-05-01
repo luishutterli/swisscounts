@@ -1,13 +1,13 @@
 import type { Request, Response } from "express";
 import CustomerModel from "./customer.model";
 
-async function getCustomers(request: Request<{ org: number }>, response: Response) {
+export async function getCustomers(request: Request<{ org: number }>, response: Response) {
   const { org } = request.params;
   const customers = await CustomerModel.find({ orgId: org });
   response.json(customers);
 }
 
-async function createCustomer(request: Request<{ org: number }>, response: Response) {
+export async function createCustomer(request: Request<{ org: number }>, response: Response) {
   const { org } = request.params;
   const customerData = request.body;
   const customer = new CustomerModel({ ...customerData, orgId: org });
@@ -18,7 +18,10 @@ async function createCustomer(request: Request<{ org: number }>, response: Respo
   response.status(201).json(customer);
 }
 
-async function updateCustomer(request: Request<{ org: number; id: string }>, response: Response) {
+export async function updateCustomer(
+  request: Request<{ org: number; id: string }>,
+  response: Response,
+) {
   const { org, id } = request.params;
   const customerData = request.body;
 
@@ -27,14 +30,23 @@ async function updateCustomer(request: Request<{ org: number; id: string }>, res
     return response.status(404).json({ error: "Customer not found" });
   }
 
-  // only update the fields that are provided
+  const allowedFields = [
+    "title",
+    "name",
+    "surName",
+    "email",
+    "phone",
+    "address",
+    "dateOfBirth",
+    "state",
+  ];
+
   for (const key of Object.keys(customerData)) {
-    if (customerData[key] !== undefined) {
-      customer.set(key, customerData[key]);
-    }
+    if (customerData[key] === undefined || !allowedFields.includes(key)) continue;
+    customer.set(key, customerData[key]);
   }
   customer.updatedAt = new Date();
-  
+
   const updatedCustomer = await customer.save();
   if (!updatedCustomer) {
     return response.status(400).json({ error: "Failed to update customer" });
