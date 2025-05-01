@@ -14,7 +14,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-app.use("/:org/customer/", customerRoutes);
+app.use("/:org/customers/", customerRoutes);
 
 app.get("/", (req, res) => {
   res.send(`SwissCounts Server v${version} by Luis Hutterli`);
