@@ -11,5 +11,4 @@ COPY . /app
 ENV NODE_ENV=production
 
 USER bun
-EXPOSE 3000
 CMD ["bun", "start"]

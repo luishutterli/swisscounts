@@ -10,8 +10,9 @@ services:
 
   db2_mongodb:
     image: mongodb/mongodb-community-server:7.0.0-ubi8
+    hostname: db2_mongodb
     ports:
-      - 27017:27017 # For development only
+      - 27017:27017 # Exposed for development only
     networks:
       - internal
     volumes:
