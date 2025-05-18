@@ -32,17 +32,18 @@ const Customers = () => {
                   Email
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Phone
+                  Telefon
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Company
+                  Firma
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                  Aktionen
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
+              {/* TODO: Investigate, (expected pagination but not implemented on backend) */}
               {data?.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center py-4">
@@ -60,10 +61,10 @@ const Customers = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap space-x-2">
                     <Button variant="outline" size="sm">
-                      View
+                      Ansehen
                     </Button>
                     <Button variant="outline" size="sm">
-                      Edit
+                      Bearbeiten
                     </Button>
                   </td>
                 </tr>
