@@ -6,6 +6,10 @@ import { invoiceRoutes } from "./impl/invoice/invoice.routes";
 import { couponRoutes } from "./impl/coupon/coupon.routes";
 import { expenseRoutes } from "./impl/expense/expense.routes";
 
+interface AppError extends Error {
+  statusCode?: number;
+}
+
 // ---- Config ----
 const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 3000;
 const version = "1.0.0";
@@ -69,6 +73,42 @@ app.use((req, res, next) => {
   next();
 });
 
+// Error handling middleware
+app.use(
+  (
+    err: Error | AppError,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    console.error("Error:", err.message);
+    console.error("Stack:", err.stack);
+
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    const statusCode = (err as AppError).statusCode ?? 500;
+
+    const errorResponse: Record<string, unknown> = {
+      success: false,
+      error: {
+        message:
+          process.env.NODE_ENV === "production" ? "Internal server error" : err.message,
+      },
+    };
+
+    if (process.env.NODE_ENV !== "production") {
+      errorResponse.error = {
+        ...(errorResponse.error as Record<string, unknown>),
+        stack: err.stack ?? "No stack trace available",
+      };
+    }
+
+    res.status(statusCode).json(errorResponse);
+  },
+);
+
 // Base
 const base = `/v${version.split(".")[0]}`;
 
@@ -89,5 +129,5 @@ app.use((req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`${poweredText}: Server listening on port ${port}`);
 });

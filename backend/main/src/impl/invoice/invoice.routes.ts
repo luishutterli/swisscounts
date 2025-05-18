@@ -8,14 +8,16 @@ import {
 
 const router = Router();
 
-router.get("/", getInvoices);
-router.get("/:id", async (req: Request<{ org: number; id: string }>, res: Response) => {
+router.get("/", async (req: Request<{ org: string }>, res: Response) => {
+  await getInvoices(req, res);
+});
+router.get("/:id", async (req: Request<{ org: string; id: string }>, res: Response) => {
   await getInvoiceById(req, res);
 });
-router.post("/", async (req: Request<{ org: number }>, res: Response) => {
+router.post("/", async (req: Request<{ org: string }>, res: Response) => {
   await createInvoice(req, res);
 });
-router.patch("/:id", async (req: Request<{ org: number; id: string }>, res: Response) => {
+router.patch("/:id", async (req: Request<{ org: string; id: string }>, res: Response) => {
   await updateInvoice(req, res);
 });
 

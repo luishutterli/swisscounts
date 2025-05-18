@@ -1,17 +1,23 @@
 import type { Request, Response } from "express";
 import ExpenseModel from "./expense.model";
 
-export async function getExpenses(request: Request<{ org: number }>, response: Response) {
-  const { org } = request.params;
+export async function getExpenses(request: Request<{ org: string }>, response: Response) {
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const expenses = await ExpenseModel.find({ orgId: org, state: "active" });
   response.json(expenses);
 }
 
 export async function createExpense(
-  request: Request<{ org: number }>,
+  request: Request<{ org: string }>,
   response: Response,
 ) {
-  const { org } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const expenseData = request.body;
   const expense = new ExpenseModel({
     ...expenseData,
@@ -28,10 +34,14 @@ export async function createExpense(
 }
 
 export async function updateExpense(
-  request: Request<{ org: number; id: string }>,
+  request: Request<{ org: string; id: string }>,
   response: Response,
 ) {
-  const { org, id } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
+  const id = request.params.id;
   const expenseData = request.body;
 
   const expense = await ExpenseModel.findOne({ _id: id, orgId: org });

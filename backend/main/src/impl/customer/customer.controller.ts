@@ -1,14 +1,27 @@
 import type { Request, Response } from "express";
 import CustomerModel from "./customer.model";
 
-export async function getCustomers(request: Request<{ org: number }>, response: Response) {
-  const { org } = request.params;
+export async function getCustomers(
+  request: Request<{ org: string }>,
+  response: Response,
+) {
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const customers = await CustomerModel.find({ orgId: org });
+  console.log("Debug: Customers", customers);
   response.json(customers);
 }
 
-export async function createCustomer(request: Request<{ org: number }>, response: Response) {
-  const { org } = request.params;
+export async function createCustomer(
+  request: Request<{ org: string }>,
+  response: Response,
+) {
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const customerData = request.body;
   const customer = new CustomerModel({ ...customerData, orgId: org });
   const cu = await customer.save();
@@ -19,10 +32,11 @@ export async function createCustomer(request: Request<{ org: number }>, response
 }
 
 export async function updateCustomer(
-  request: Request<{ org: number; id: string }>,
+  request: Request<{ org: string; id: string }>,
   response: Response,
 ) {
-  const { org, id } = request.params;
+  const org = Number.parseInt(request.params.org);
+  const id = request.params.id;
   const customerData = request.body;
 
   const customer = await CustomerModel.findOne({ _id: id, orgId: org });

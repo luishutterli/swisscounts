@@ -1,8 +1,11 @@
 import type { Request, Response } from "express";
 import InvoiceModel from "./invoice.model";
 
-export async function getInvoices(request: Request<{ org: number }>, response: Response) {
-  const { org } = request.params;
+export async function getInvoices(request: Request<{ org: string }>, response: Response) {
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const invoices = await InvoiceModel.find({ orgId: org, state: "active" })
     .populate("customerId")
     .populate("positions.inventoryItemId");
@@ -10,10 +13,14 @@ export async function getInvoices(request: Request<{ org: number }>, response: R
 }
 
 export async function getInvoiceById(
-  request: Request<{ org: number; id: string }>,
+  request: Request<{ org: string; id: string }>,
   response: Response,
 ) {
-  const { org, id } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
+  const id = request.params.id;
   const invoice = await InvoiceModel.findOne({ _id: id, orgId: org, state: "active" })
     .populate("customerId")
     .populate("positions.inventoryItemId");
@@ -25,10 +32,13 @@ export async function getInvoiceById(
 }
 
 export async function createInvoice(
-  request: Request<{ org: number }>,
+  request: Request<{ org: string }>,
   response: Response,
 ) {
-  const { org } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const invoiceData = request.body;
 
   const lastInvoice = await InvoiceModel.findOne({ orgId: org })
@@ -52,10 +62,14 @@ export async function createInvoice(
 }
 
 export async function updateInvoice(
-  request: Request<{ org: number; id: string }>,
+  request: Request<{ org: string; id: string }>,
   response: Response,
 ) {
-  const { org, id } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
+  const id = request.params.id;
   const invoiceData = request.body;
 
   const invoice = await InvoiceModel.findOne({ _id: id, orgId: org });

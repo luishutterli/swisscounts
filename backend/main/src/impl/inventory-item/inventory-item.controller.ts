@@ -2,19 +2,25 @@ import type { Request, Response } from "express";
 import InventoryItemModel from "./inventory-item.model";
 
 export async function getInventoryItems(
-  request: Request<{ org: number }>,
+  request: Request<{ org: string }>,
   response: Response,
 ) {
-  const { org } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const items = await InventoryItemModel.find({ orgId: org, state: "active" });
   response.json(items);
 }
 
 export async function createInventoryItem(
-  request: Request<{ org: number }>,
+  request: Request<{ org: string }>,
   response: Response,
 ) {
-  const { org } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const itemData = request.body;
   const item = new InventoryItemModel({ ...itemData, orgId: org });
   const savedItem = await item.save();
@@ -25,10 +31,14 @@ export async function createInventoryItem(
 }
 
 export async function updateInventoryItem(
-  request: Request<{ org: number; id: string }>,
+  request: Request<{ org: string; id: string }>,
   response: Response,
 ) {
-  const { org, id } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
+  const id = request.params.id;
   const itemData = request.body;
 
   const item = await InventoryItemModel.findOne({ _id: id, orgId: org });
