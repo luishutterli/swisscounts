@@ -58,12 +58,26 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 
+// TODO: Only Development
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept",
+  );
+  next();
+});
+
+// Base
+const base = `/v${version.split(".")[0]}`;
+
 // Routes
-app.use("/:org/customers/", customerRoutes);
-app.use("/:org/inventory/items/", inventoryItemRoutes);
-app.use("/:org/invoices/", invoiceRoutes);
-app.use("/:org/coupons/", couponRoutes);
-app.use("/:org/expenses/", expenseRoutes);
+app.use(`${base}/:org/customers/`, customerRoutes);
+app.use(`${base}/:org/inventory/items/`, inventoryItemRoutes);
+app.use(`${base}/:org/invoices/`, invoiceRoutes);
+app.use(`${base}/:org/coupons/`, couponRoutes);
+app.use(`${base}/:org/expenses/`, expenseRoutes);
 
 app.get("/", (req, res) => {
   res.send(poweredText);

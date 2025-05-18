@@ -12,9 +12,9 @@ interface NavItem {
 
 const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boolean }) => {
   const navItems: NavItem[] = [
-    { path: "/", label: "Dashboard", icon: LuLayoutDashboard },
+    { path: "/app", label: "Dashboard", icon: LuLayoutDashboard },
     { path: "/", label: "Rechnungen", icon: TbFileInvoice },
-    { path: "/", label: "Kunden", icon: LuUsers },
+    { path: "/customers", label: "Kunden", icon: LuUsers },
     { path: "/", label: "Gutscheine", icon: LuTag },
     { path: "/", label: "Inventar", icon: LuShoppingBag },
     { path: "/", label: "Ausgaben", icon: FiDollarSign },
