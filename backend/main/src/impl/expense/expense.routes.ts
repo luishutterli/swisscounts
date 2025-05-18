@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { getExpenses, createExpense, updateExpense } from "./expense.controller";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/", async (req: Request<{ org: string }>, res: Response) => {
   await getExpenses(req, res);

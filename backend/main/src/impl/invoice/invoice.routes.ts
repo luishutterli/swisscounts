@@ -6,7 +6,7 @@ import {
   updateInvoice,
 } from "./invoice.controller";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/", async (req: Request<{ org: string }>, res: Response) => {
   await getInvoices(req, res);

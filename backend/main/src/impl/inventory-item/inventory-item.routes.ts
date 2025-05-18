@@ -5,7 +5,7 @@ import {
   updateInventoryItem,
 } from "./inventory-item.controller";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/", async (req: Request<{ org: string }>, res: Response) => {
   await getInventoryItems(req, res);

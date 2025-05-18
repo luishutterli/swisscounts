@@ -5,8 +5,11 @@ export async function getCustomers(
   request: Request<{ org: string }>,
   response: Response,
 ) {
+  console.log("Debug: Request params", request.params);
   const org = Number.parseInt(request.params.org);
   if (Number.isNaN(org) || org < 0) {
+    console.error("Invalid org ID:", request.params.org, "Parsed org ID:", org);
+    
     return response.status(400).json({ error: "Invalid org ID" });
   }
   const customers = await CustomerModel.find({ orgId: org });

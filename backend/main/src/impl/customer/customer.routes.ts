@@ -1,9 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import { createCustomer, getCustomers, updateCustomer } from "./customer.controller";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
-// TODO: Why is this required on the last two but not on the first route?
 router.get("/", async (req: Request<{ org: string }>, res: Response) => {
   await getCustomers(req, res);
 });
