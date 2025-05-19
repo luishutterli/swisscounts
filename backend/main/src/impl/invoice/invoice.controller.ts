@@ -1,15 +1,22 @@
 import type { Request, Response } from "express";
 import InvoiceModel from "./invoice.model";
+import { getPaginationParams, paginateArray } from "../../util/pagination";
 
 export async function getInvoices(request: Request<{ org: string }>, response: Response) {
   const org = Number.parseInt(request.params.org);
   if (Number.isNaN(org) || org < 0) {
     return response.status(400).json({ error: "Invalid org ID" });
   }
+
+  const paginationOptions = getPaginationParams(request);
+
   const invoices = await InvoiceModel.find({ orgId: org, state: "active" })
     .populate("customerId")
     .populate("positions.inventoryItemId");
-  response.json(invoices);
+
+  const paginatedResult = paginateArray(invoices, paginationOptions);
+
+  response.json(paginatedResult);
 }
 
 export async function getInvoiceById(

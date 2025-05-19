@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import InventoryItemModel from "./inventory-item.model";
+import { getPaginationParams, paginateArray } from "../../util/pagination";
 
 export async function getInventoryItems(
   request: Request<{ org: string }>,
@@ -9,8 +10,13 @@ export async function getInventoryItems(
   if (Number.isNaN(org) || org < 0) {
     return response.status(400).json({ error: "Invalid org ID" });
   }
+
+  const paginationOptions = getPaginationParams(request);
+
   const items = await InventoryItemModel.find({ orgId: org, state: "active" });
-  response.json(items);
+  const paginatedResult = paginateArray(items, paginationOptions);
+
+  response.json(paginatedResult);
 }
 
 export async function createInventoryItem(

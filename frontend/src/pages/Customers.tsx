@@ -43,15 +43,14 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {/* TODO: Investigate, (expected pagination but not implemented on backend) */}
-              {data?.length === 0 && (
+              {data?.data.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center py-4">
-                    No customers found
+                    Keine Kunden gefunden
                   </td>
                 </tr>
               )}
-              {data?.map((customer) => (
+              {data?.data.map((customer) => (
                 <tr key={customer.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">{customer.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{customer.email}</td>
@@ -79,16 +78,16 @@ const Customers = () => {
               variant="outline"
               disabled={page === 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}>
-              Previous
+              Vorherige
             </Button>
             <span>
-              Page {page} of {data && Math.ceil(data.total / data.limit)}
+              Seite {page} von {data && Math.ceil(data.total / data.limit)}
             </span>
             <Button
               variant="outline"
               disabled={!data || page >= Math.ceil(data.total / data.limit)}
               onClick={() => setPage((p) => p + 1)}>
-              Next
+              Nächste
             </Button>
           </div>
         )}

@@ -1,13 +1,19 @@
 import type { Request, Response } from "express";
 import ExpenseModel from "./expense.model";
+import { getPaginationParams, paginateArray } from "../../util/pagination";
 
 export async function getExpenses(request: Request<{ org: string }>, response: Response) {
   const org = Number.parseInt(request.params.org);
   if (Number.isNaN(org) || org < 0) {
     return response.status(400).json({ error: "Invalid org ID" });
   }
+
+  const paginationOptions = getPaginationParams(request);
+
   const expenses = await ExpenseModel.find({ orgId: org, state: "active" });
-  response.json(expenses);
+  const paginatedResult = paginateArray(expenses, paginationOptions);
+
+  response.json(paginatedResult);
 }
 
 export async function createExpense(

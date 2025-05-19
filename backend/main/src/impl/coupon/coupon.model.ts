@@ -138,8 +138,25 @@ const couponSchema = new Schema<ICoupon, CouponModel, ICouponVirtuals>(
     updatedAt: { type: Date, default: Date.now },
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
+      },
+    },
+    toObject: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
+      },
+    },
   },
 );
 

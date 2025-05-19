@@ -1,20 +1,23 @@
 import type { Request, Response } from "express";
 import CustomerModel from "./customer.model";
+import { getPaginationParams, paginateArray } from "../../util/pagination";
 
 export async function getCustomers(
   request: Request<{ org: string }>,
   response: Response,
 ) {
-  console.log("Debug: Request params", request.params);
   const org = Number.parseInt(request.params.org);
   if (Number.isNaN(org) || org < 0) {
     console.error("Invalid org ID:", request.params.org, "Parsed org ID:", org);
-    
     return response.status(400).json({ error: "Invalid org ID" });
   }
+
+  const paginationOptions = getPaginationParams(request);
+
   const customers = await CustomerModel.find({ orgId: org });
-  console.log("Debug: Customers", customers);
-  response.json(customers);
+  const paginatedResult = paginateArray(customers, paginationOptions);
+
+  response.json(paginatedResult);
 }
 
 export async function createCustomer(

@@ -14,23 +14,46 @@ interface IExpense {
   state: "active" | "deleted";
 }
 
-const expenseSchema = new Schema<IExpense>({
-  description: { type: String, required: true },
-  amount: { type: Number, required: true },
-  category: { type: String, required: false },
-  date: { type: Date, required: true },
-  receiptImageURL: { type: String, required: false },
-  notes: { type: String, required: false },
-  createdBy: { type: Number, required: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  orgId: { type: Number, required: true },
-  state: {
-    type: String,
-    enum: ["active", "deleted"],
-    default: "active",
+const expenseSchema = new Schema<IExpense>(
+  {
+    description: { type: String, required: true },
+    amount: { type: Number, required: true },
+    category: { type: String, required: false },
+    date: { type: Date, required: true },
+    receiptImageURL: { type: String, required: false },
+    notes: { type: String, required: false },
+    createdBy: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+    orgId: { type: Number, required: true },
+    state: {
+      type: String,
+      enum: ["active", "deleted"],
+      default: "active",
+    },
   },
-});
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
+      },
+    },
+    toObject: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
+      },
+    },
+  },
+);
 
 const ExpenseModel = model<IExpense>("Expenses", expenseSchema);
 export default ExpenseModel;

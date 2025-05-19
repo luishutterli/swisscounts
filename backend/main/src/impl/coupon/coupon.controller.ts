@@ -1,17 +1,29 @@
 import type { Request, Response } from "express";
 import CouponModel from "./coupon.model";
+import { getPaginationParams, paginateArray } from "../../util/pagination";
 
-export async function getCoupons(request: Request<{ org: number }>, response: Response) {
-  const { org } = request.params;
+export async function getCoupons(request: Request<{ org: string }>, response: Response) {
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
+
+  const paginationOptions = getPaginationParams(request);
+
   const coupons = await CouponModel.find({ orgId: org, state: "active" });
-  response.json(coupons);
+  const paginatedResult = paginateArray(coupons, paginationOptions);
+
+  response.json(paginatedResult);
 }
 
 export async function createCoupon(
-  request: Request<{ org: number }>,
+  request: Request<{ org: string }>,
   response: Response,
 ) {
-  const { org } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
   const couponData = request.body;
 
   const existingCoupon = await CouponModel.findOne({
@@ -39,10 +51,14 @@ export async function createCoupon(
 }
 
 export async function updateCoupon(
-  request: Request<{ org: number; id: string }>,
+  request: Request<{ org: string; id: string }>,
   response: Response,
 ) {
-  const { org, id } = request.params;
+  const org = Number.parseInt(request.params.org);
+  if (Number.isNaN(org) || org < 0) {
+    return response.status(400).json({ error: "Invalid org ID" });
+  }
+  const id = request.params.id;
   const couponData = request.body;
 
   const coupon = await CouponModel.findOne({ _id: id, orgId: org });

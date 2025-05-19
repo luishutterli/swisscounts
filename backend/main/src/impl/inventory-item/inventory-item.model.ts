@@ -32,41 +32,64 @@ interface IInventoryItem {
   state: "active" | "deleted";
 }
 
-const inventoryItemSchema = new Schema<IInventoryItem>({
-  name: { type: String, required: true },
-  shortName: { type: String, required: false },
-  description: { type: String, required: false },
-  type: { type: String, enum: ["product", "service"], required: true },
-  price: {
-    mwst: { type: String, enum: ["brutto", "netto"], required: true },
-    price: { type: Number, required: true },
-    mwstPercent: { type: Number, required: false },
-    unit: {
-      type: String,
-      enum: ["Stück", "t", "kg", "g", "l", "cl", "ml", "m", "cm", "mm"],
+const inventoryItemSchema = new Schema<IInventoryItem>(
+  {
+    name: { type: String, required: true },
+    shortName: { type: String, required: false },
+    description: { type: String, required: false },
+    type: { type: String, enum: ["product", "service"], required: true },
+    price: {
+      mwst: { type: String, enum: ["brutto", "netto"], required: true },
+      price: { type: Number, required: true },
+      mwstPercent: { type: Number, required: false },
+      unit: {
+        type: String,
+        enum: ["Stück", "t", "kg", "g", "l", "cl", "ml", "m", "cm", "mm"],
+        required: false,
+      },
+    },
+    allowAmountDecimal: { type: Boolean, required: false },
+    imageURLs: { type: [String], required: false },
+    primaryImage: { type: Number, required: false },
+    tags: { type: [String], required: false },
+    inStockStatus: { type: Boolean, required: false },
+    properties: {
+      type: Map,
+      of: Schema.Types.Mixed,
       required: false,
     },
+    createdBy: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+    orgId: { type: Number, required: true },
+    state: {
+      type: String,
+      enum: ["active", "deleted"],
+      default: "active",
+    },
   },
-  allowAmountDecimal: { type: Boolean, required: false },
-  imageURLs: { type: [String], required: false },
-  primaryImage: { type: Number, required: false },
-  tags: { type: [String], required: false },
-  inStockStatus: { type: Boolean, required: false },
-  properties: {
-    type: Map,
-    of: Schema.Types.Mixed,
-    required: false,
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
+      },
+    },
+    toObject: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
+      },
+    },
   },
-  createdBy: { type: Number, required: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  orgId: { type: Number, required: true },
-  state: {
-    type: String,
-    enum: ["active", "deleted"],
-    default: "active",
-  },
-});
+);
 
 const InventoryItemModel = model<IInventoryItem>("InventoryItems", inventoryItemSchema);
 export default InventoryItemModel;

@@ -49,92 +49,115 @@ interface IInvoice {
   state: "active" | "deleted";
 }
 
-const invoiceSchema = new Schema<IInvoice>({
-  invoiceId: { type: Number, required: true },
-  customerId: { type: Schema.Types.ObjectId, ref: "Customers", required: true },
-  description: { type: String, required: false },
-  text: { type: String, required: false },
-  notes: { type: String, required: false },
-  positions: [
-    {
-      positionId: { type: Number, required: true },
-      amount: { type: Number, required: true },
-      settledPrice: {
-        mwst: { type: String, enum: ["brutto", "netto"], required: true },
-        price: { type: Number, required: true },
-        mwstPercent: { type: Number, required: false },
-        unit: {
-          type: String,
-          enum: ["Stück", "t", "kg", "g", "l", "cl", "ml", "m", "cm", "mm"],
+const invoiceSchema = new Schema<IInvoice>(
+  {
+    invoiceId: { type: Number, required: true },
+    customerId: { type: Schema.Types.ObjectId, ref: "Customers", required: true },
+    description: { type: String, required: false },
+    text: { type: String, required: false },
+    notes: { type: String, required: false },
+    positions: [
+      {
+        positionId: { type: Number, required: true },
+        amount: { type: Number, required: true },
+        settledPrice: {
+          mwst: { type: String, enum: ["brutto", "netto"], required: true },
+          price: { type: Number, required: true },
+          mwstPercent: { type: Number, required: false },
+          unit: {
+            type: String,
+            enum: ["Stück", "t", "kg", "g", "l", "cl", "ml", "m", "cm", "mm"],
+            required: false,
+          },
+        },
+        inventoryItemId: {
+          type: Schema.Types.ObjectId,
+          ref: "InventoryItems",
           required: false,
         },
+        customItem: {
+          name: { type: String, required: false },
+          description: { type: String, required: false },
+        },
       },
-      inventoryItemId: {
-        type: Schema.Types.ObjectId,
-        ref: "InventoryItems",
+    ],
+    paymentInformation: {
+      paidAt: { type: Date, required: true },
+      paymentMethod: {
+        type: String,
+        enum: ["cash", "twint", "other"],
+        required: true,
+      },
+      paymentStatus: {
+        type: String,
+        enum: ["pending", "completed", "failed"],
+        required: true,
+      },
+      transactionId: { type: String, required: false },
+      paymentDetails: {
+        type: Map,
+        of: Schema.Types.Mixed,
         required: false,
       },
-      customItem: {
-        name: { type: String, required: false },
-        description: { type: String, required: false },
+    },
+    issuedAt: { type: Date, required: true },
+    dueAt: { type: Date, required: true },
+    status: {
+      type: String,
+      enum: ["draft", "sent", "viewed", "paid", "overdue", "canceled"],
+      required: true,
+    },
+    billingAddress: {
+      street: { type: String, required: false },
+      city: { type: String, required: false },
+      canton: { type: String, required: false },
+      postalCode: { type: String, required: false },
+      country: { type: String, required: false },
+      email: { type: String, required: false },
+      phone: { type: String, required: false },
+    },
+    shippingAddress: {
+      street: { type: String, required: false },
+      city: { type: String, required: false },
+      canton: { type: String, required: false },
+      postalCode: { type: String, required: false },
+      country: { type: String, required: false },
+      email: { type: String, required: false },
+      phone: { type: String, required: false },
+    },
+    createdBy: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now, required: true },
+    updatedAt: { type: Date, default: Date.now, required: true },
+    orgId: { type: Number, required: true },
+    state: {
+      type: String,
+      enum: ["active", "deleted"],
+      default: "active",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
       },
     },
-  ],
-  paymentInformation: {
-    paidAt: { type: Date, required: true },
-    paymentMethod: {
-      type: String,
-      enum: ["cash", "twint", "other"],
-      required: true,
-    },
-    paymentStatus: {
-      type: String,
-      enum: ["pending", "completed", "failed"],
-      required: true,
-    },
-    transactionId: { type: String, required: false },
-    paymentDetails: {
-      type: Map,
-      of: Schema.Types.Mixed,
-      required: false,
+    toObject: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        ret._id = undefined;
+        ret.__v = undefined;
+        return ret;
+      },
     },
   },
-  issuedAt: { type: Date, required: true },
-  dueAt: { type: Date, required: true },
-  status: {
-    type: String,
-    enum: ["draft", "sent", "viewed", "paid", "overdue", "canceled"],
-    required: true,
-  },
-  billingAddress: {
-    street: { type: String, required: false },
-    city: { type: String, required: false },
-    canton: { type: String, required: false },
-    postalCode: { type: String, required: false },
-    country: { type: String, required: false },
-    email: { type: String, required: false },
-    phone: { type: String, required: false },
-  },
-  shippingAddress: {
-    street: { type: String, required: false },
-    city: { type: String, required: false },
-    canton: { type: String, required: false },
-    postalCode: { type: String, required: false },
-    country: { type: String, required: false },
-    email: { type: String, required: false },
-    phone: { type: String, required: false },
-  },
-  createdBy: { type: Number, required: true },
-  createdAt: { type: Date, default: Date.now, required: true },
-  updatedAt: { type: Date, default: Date.now, required: true },
-  orgId: { type: Number, required: true },
-  state: {
-    type: String,
-    enum: ["active", "deleted"],
-    default: "active",
-    required: true,
-  },
-});
+);
 
 const InvoiceModel = model<IInvoice>("Invoices", invoiceSchema);
 export default InvoiceModel;
