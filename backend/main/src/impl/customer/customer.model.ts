@@ -33,12 +33,19 @@ const customerSchema = new Schema<ICustomer>(
       street: { type: String, required: false },
       city: { type: String, required: false },
       canton: { type: String, required: false },
-      postalCode: { type: String, minlength: 4, required: false },
+      postalCode: {
+        type: String,
+        required: false,
+        validate: {
+          validator: (v) => {
+            return v === null || v === undefined || v === "" || v.length >= 4;
+          },
+          message: "Postal code must be at least 4 characters or empty",
+        },
+      },
       country: { type: String, required: false },
     },
     dateOfBirth: { type: Date, required: false },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
     orgId: { type: Number, required: true },
     state: {
       type: String,

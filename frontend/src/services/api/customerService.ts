@@ -2,13 +2,25 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BaseApiService } from "../baseApiService";
 import type { Entity, QueryParams } from "../types";
 
+export interface IAddress {
+  street?: string;
+  city?: string;
+  canton?: string;
+  postalCode?: string;
+  country?: string;
+}
+
 export interface Customer extends Entity {
+  title?: "Herr" | "Frau";
   name: string;
+  surName: string;
   email: string;
   phone?: string;
-  address?: string;
+  address?: IAddress;
   company?: string;
-  notes?: string;
+  dateOfBirth?: string;
+  orgId?: number;
+  state?: "active" | "suspended" | "deleted";
 }
 
 class CustomerService extends BaseApiService<Customer> {
