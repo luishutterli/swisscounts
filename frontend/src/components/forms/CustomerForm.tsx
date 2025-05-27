@@ -17,7 +17,6 @@ export interface CustomerFormData {
   surName: string;
   email: string;
   phone?: string;
-  company?: string;
   street?: string;
   city?: string;
   canton?: string;
@@ -41,7 +40,6 @@ const CustomerForm = ({
     surName: initialData.surName ?? "",
     email: initialData.email ?? "",
     phone: initialData.phone ?? "",
-    company: initialData.company ?? "",
     street: initialData.street ?? "",
     city: initialData.city ?? "",
     canton: initialData.canton ?? "",
@@ -88,7 +86,6 @@ const CustomerForm = ({
       surName: initialData.surName ?? "",
       email: initialData.email ?? "",
       phone: initialData.phone ?? "",
-      company: initialData.company ?? "",
       street: initialData.street ?? "",
       city: initialData.city ?? "",
       canton: initialData.canton ?? "",
@@ -207,20 +204,6 @@ const CustomerForm = ({
               id="phone"
               name="phone"
               value={formData.phone}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label htmlFor="company" className="block text-sm font-medium text-gray-700">
-              Firma
-            </label>
-            <input
-              type="text"
-              id="company"
-              name="company"
-              value={formData.company}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
             />

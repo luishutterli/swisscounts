@@ -17,7 +17,6 @@ export interface Customer extends Entity {
   email: string;
   phone?: string;
   address?: IAddress;
-  company?: string;
   dateOfBirth?: string;
   orgId?: number;
   state?: "active" | "suspended" | "deleted";

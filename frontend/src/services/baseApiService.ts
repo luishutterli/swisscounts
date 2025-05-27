@@ -24,7 +24,7 @@ export class BaseApiService<T extends Entity> implements ServiceOperations<T> {
   }
 
   async update(id: string, data: Partial<T>): Promise<T> {
-    return apiClient.put<T>(getFullUrl(`${this.endpoint}/${id}`), data);
+    return apiClient.patch<T>(getFullUrl(`${this.endpoint}/${id}`), data);
   }
 
   async remove(id: string): Promise<void> {
