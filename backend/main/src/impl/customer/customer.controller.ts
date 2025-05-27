@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
-import CustomerModel from "./customer.model";
+import CustomerModel, { type ICustomer } from "./customer.model";
 import { getPaginationParams, paginateArray } from "../../util/pagination";
+import type { Document, Types } from "mongoose";
 
 export async function getCustomers(
   request: Request<{ org: string }>,
@@ -30,6 +31,9 @@ export async function createCustomer(
   }
   const customerData = request.body;
   const customer = new CustomerModel({ ...customerData, orgId: org });
+
+  cleanAddress(customer);
+
   const cu = await customer.save();
   if (!cu) {
     return response.status(400).json({ error: "Failed to create customer" });
@@ -67,9 +71,34 @@ export async function updateCustomer(
   }
   customer.updatedAt = new Date();
 
+  cleanAddress(customer);
+
   const updatedCustomer = await customer.save();
   if (!updatedCustomer) {
     return response.status(400).json({ error: "Failed to update customer" });
   }
   response.json(updatedCustomer);
+}
+
+export function cleanAddress(
+  // biome-ignore lint/complexity/noBannedTypes: required for Mongoose Document type
+  customer: Document<unknown, {}, ICustomer, {}> &
+    ICustomer & {
+      _id: Types.ObjectId;
+    } & {
+      __v: number;
+    },
+) {
+  if (!customer.address) return customer;
+
+  const { street, postalCode, city, canton, country } = customer.address;
+
+  if (
+    street === "" &&
+    postalCode === "" &&
+    city === "" &&
+    canton === "" &&
+    country === ""
+  )
+    customer.address = undefined;
 }

@@ -8,7 +8,7 @@ export interface IAddress {
   country: string;
 }
 
-interface ICustomer {
+export interface ICustomer {
   title?: "Herr" | "Frau";
   name: string;
   surName: string;

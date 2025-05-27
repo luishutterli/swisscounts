@@ -4,6 +4,7 @@ import {
   useCustomers,
   useCreateCustomer,
   type Customer,
+  useUpdateCustomer,
 } from "../services/api/customerService";
 import Button from "../components/ui/Button";
 import CustomerForm from "../components/forms/CustomerForm";
@@ -16,6 +17,7 @@ const Customers = () => {
   const [modalData, setModalData] = useState<Partial<Customer>>({});
   const { data, isLoading, error } = useCustomers({ page });
   const createCustomer = useCreateCustomer();
+  const { mutate: updateCustomer } = useUpdateCustomer();
   const { showToast } = useToast();
 
   const getAddressText = (customer: Customer) => {
@@ -24,9 +26,38 @@ const Customers = () => {
     return `${street ?? ""} ${postalCode ?? ""} ${city ?? ""}`;
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-    if (isModalOpen) setModalData({});
+  const openModal = (customerData?: Partial<Customer>) => {
+    setModalData(customerData || {});
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalData({});
+  };
+
+  const handleCreateCustomer = async (data: Omit<Customer, "id">) => {
+    console.log("Creating customer with data:", data);
+    try {
+      await createCustomer.mutateAsync(data);
+      showToast("Kunde erfolgreich erstellt", "success");
+      closeModal();
+    } catch (error) {
+      console.error("Error creating customer:", error);
+      showToast("Fehler beim Erstellen des Kunden", "error");
+    }
+  };
+
+  const handleEditCustomer = async (data: Omit<Customer, "id">) => {
+    console.log("Editing customer with data:", data, " and id:", modalData.id);
+    if (!modalData.id) {
+      showToast("Kunde konnte nicht bearbeitet werden", "error");
+      return;
+    }
+    updateCustomer({ id: modalData.id, data: data });
+    showToast("Kunde erfolgreich bearbeitet", "success");
+    closeModal();
+    setPage(1);
   };
 
   const renderContent = () => {
@@ -87,11 +118,8 @@ const Customers = () => {
                     {getAddressText(customer)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap space-x-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        // TODO: Implement handleEdit functionality for editing customer details
-                      }}>
+                    {" "}
+                    <Button variant="outline" onClick={() => openModal(customer)}>
                       Bearbeiten
                     </Button>
                     <Button
@@ -132,45 +160,22 @@ const Customers = () => {
   return (
     <Layout name="Kunden">
       <div className="py-8 px-4 sm:px-6 lg:px-8">
+        {" "}
         <div className="mb-4 flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-900">Kunden</h1>
-          <Button onClick={toggleModal}>Neuen Kunden hinzufügen</Button>
+          <Button onClick={() => openModal()}>Neuen Kunden hinzufügen</Button>
         </div>
         {renderContent()}
-      </div>
+      </div>{" "}
       <CustomerForm
         isOpen={isModalOpen}
-        title="Neuen Kunden hinzufügen"
+        title={modalData.id ? "Kunden bearbeiten" : "Neuen Kunden hinzufügen"}
         initialData={modalData}
         onSubmit={async (data: Omit<Customer, "id">) => {
-          try {
-            // const address = {
-            //   street: data.address?.street,
-            //   city: data.address?.city,
-            //   canton: data.address?.canton,
-            //   postalCode: data.address?.postalCode,
-            //   country: data.address?.country,
-            // };
-            // if (
-            //   !address.street &&
-            //   !address.city &&
-            //   !address.canton &&
-            //   !address.postalCode &&
-            //   !address.country
-            // ) {
-            //   await createCustomer.mutateAsync(data);
-            // } else {
-            //   await createCustomer.mutateAsync({ ...data, address });
-            // }
-            await createCustomer.mutateAsync(data);
-            showToast("Kunde erfolgreich erstellt", "success");
-            setIsModalOpen(false);
-          } catch (error) {
-            console.error("Error creating customer:", error);
-            showToast("Fehler beim Erstellen des Kunden", "error");
-          }
+          if (modalData.id) handleEditCustomer(data);
+          else handleCreateCustomer(data);
         }}
-        onCancel={toggleModal}
+        onCancel={closeModal}
       />
     </Layout>
   );

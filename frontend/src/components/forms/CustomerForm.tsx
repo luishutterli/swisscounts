@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import type { Customer } from "../../services/api/";
@@ -20,7 +20,7 @@ const CustomerForm = ({
   isOpen,
   title,
 }: CustomerFormProps) => {
-  const [formData, setFormData] = useState<Omit<Customer, "id">>({
+  const initialFormData = {
     title: initialData.title ?? undefined,
     name: initialData.name ?? "",
     surName: initialData.surName ?? "",
@@ -33,7 +33,26 @@ const CustomerForm = ({
       postalCode: initialData.address?.postalCode ?? "",
       country: initialData.address?.country ?? "",
     },
-  });
+  };
+
+  const [formData, setFormData] = useState<Omit<Customer, "id">>(initialFormData);
+
+  useEffect(() => {
+    setFormData({
+      title: initialData.title ?? undefined,
+      name: initialData.name ?? "",
+      surName: initialData.surName ?? "",
+      email: initialData.email ?? "",
+      phone: initialData.phone ?? "",
+      address: {
+        street: initialData.address?.street ?? "",
+        city: initialData.address?.city ?? "",
+        canton: initialData.address?.canton ?? "",
+        postalCode: initialData.address?.postalCode ?? "",
+        country: initialData.address?.country ?? "",
+      },
+    });
+  }, [initialData]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
