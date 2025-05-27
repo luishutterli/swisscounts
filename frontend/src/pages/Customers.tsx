@@ -6,13 +6,14 @@ import {
   type Customer,
 } from "../services/api/customerService";
 import Button from "../components/ui/Button";
-import CustomerForm, { type CustomerFormData } from "../components/forms/CustomerForm";
+import CustomerForm from "../components/forms/CustomerForm";
 import { useToast } from "../hooks/useToast";
 import Spinner from "../components/ui/Spinner";
 
 const Customers = () => {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState<Partial<Customer>>({});
   const { data, isLoading, error } = useCustomers({ page });
   const createCustomer = useCreateCustomer();
   const { showToast } = useToast();
@@ -21,6 +22,11 @@ const Customers = () => {
     if (!customer.address) return "-";
     const { street, postalCode, city } = customer.address;
     return `${street ?? ""} ${postalCode ?? ""} ${city ?? ""}`;
+  };
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+    if (isModalOpen) setModalData({});
   };
 
   const renderContent = () => {
@@ -128,33 +134,35 @@ const Customers = () => {
       <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-4 flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-900">Kunden</h1>
-          <Button onClick={() => setIsModalOpen(true)}>Neuen Kunden hinzufügen</Button>
+          <Button onClick={toggleModal}>Neuen Kunden hinzufügen</Button>
         </div>
         {renderContent()}
       </div>
       <CustomerForm
         isOpen={isModalOpen}
         title="Neuen Kunden hinzufügen"
-        onSubmit={async (data: CustomerFormData) => {
+        initialData={modalData}
+        onSubmit={async (data: Omit<Customer, "id">) => {
           try {
-            const address = {
-              street: data.street,
-              city: data.city,
-              canton: data.canton,
-              postalCode: data.postalCode,
-              country: data.country,
-            };
-            if (
-              !address.street &&
-              !address.city &&
-              !address.canton &&
-              !address.postalCode &&
-              !address.country
-            ) {
-              await createCustomer.mutateAsync(data);
-            } else {
-              await createCustomer.mutateAsync({ ...data, address });
-            }
+            // const address = {
+            //   street: data.address?.street,
+            //   city: data.address?.city,
+            //   canton: data.address?.canton,
+            //   postalCode: data.address?.postalCode,
+            //   country: data.address?.country,
+            // };
+            // if (
+            //   !address.street &&
+            //   !address.city &&
+            //   !address.canton &&
+            //   !address.postalCode &&
+            //   !address.country
+            // ) {
+            //   await createCustomer.mutateAsync(data);
+            // } else {
+            //   await createCustomer.mutateAsync({ ...data, address });
+            // }
+            await createCustomer.mutateAsync(data);
             showToast("Kunde erfolgreich erstellt", "success");
             setIsModalOpen(false);
           } catch (error) {
@@ -162,7 +170,7 @@ const Customers = () => {
             showToast("Fehler beim Erstellen des Kunden", "error");
           }
         }}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={toggleModal}
       />
     </Layout>
   );

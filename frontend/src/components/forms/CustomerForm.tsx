@@ -1,29 +1,15 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
+import type { Customer } from "../../services/api/";
 
 interface CustomerFormProps {
-  onSubmit: (data: CustomerFormData) => void;
+  onSubmit: (data: Omit<Customer, "id">) => void;
   onCancel: () => void;
   isLoading?: boolean;
-  initialData?: Partial<CustomerFormData>;
+  initialData?: Partial<Customer>;
   isOpen: boolean;
   title: string;
-}
-
-export interface CustomerFormData {
-  title?: "Herr" | "Frau";
-  name: string;
-  surName: string;
-  email: string;
-  phone?: string;
-  street?: string;
-  city?: string;
-  canton?: string;
-  postalCode?: string;
-  country?: string;
-  orgId?: number;
-  state?: "active" | "suspended" | "deleted";
 }
 
 const CustomerForm = ({
@@ -34,23 +20,38 @@ const CustomerForm = ({
   isOpen,
   title,
 }: CustomerFormProps) => {
-  const [formData, setFormData] = useState<CustomerFormData>({
+  const [formData, setFormData] = useState<Omit<Customer, "id">>({
     title: initialData.title ?? undefined,
     name: initialData.name ?? "",
     surName: initialData.surName ?? "",
     email: initialData.email ?? "",
     phone: initialData.phone ?? "",
-    street: initialData.street ?? "",
-    city: initialData.city ?? "",
-    canton: initialData.canton ?? "",
-    postalCode: initialData.postalCode ?? "",
-    country: initialData.country ?? "",
+    address: {
+      street: initialData.address?.street ?? "",
+      city: initialData.address?.city ?? "",
+      canton: initialData.address?.canton ?? "",
+      postalCode: initialData.address?.postalCode ?? "",
+      country: initialData.address?.country ?? "",
+    },
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    if (
+      name === "street" ||
+      name === "city" ||
+      name === "canton" ||
+      name === "postalCode" ||
+      name === "country"
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        address: { ...prev.address, [name]: value },
+      }));
+      return;
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (errors[name]) {
@@ -86,11 +87,13 @@ const CustomerForm = ({
       surName: initialData.surName ?? "",
       email: initialData.email ?? "",
       phone: initialData.phone ?? "",
-      street: initialData.street ?? "",
-      city: initialData.city ?? "",
-      canton: initialData.canton ?? "",
-      postalCode: initialData.postalCode ?? "",
-      country: initialData.country ?? "",
+      address: {
+        street: initialData.address?.street ?? "",
+        city: initialData.address?.city ?? "",
+        canton: initialData.address?.canton ?? "",
+        postalCode: initialData.address?.postalCode ?? "",
+        country: initialData.address?.country ?? "",
+      },
     });
     setErrors({});
     onCancel();
@@ -221,7 +224,7 @@ const CustomerForm = ({
                 type="text"
                 id="street"
                 name="street"
-                value={formData.street}
+                value={formData.address?.street}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
               />
@@ -237,7 +240,7 @@ const CustomerForm = ({
                 type="text"
                 id="postalCode"
                 name="postalCode"
-                value={formData.postalCode}
+                value={formData.address?.postalCode}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
               />
@@ -251,7 +254,7 @@ const CustomerForm = ({
                 type="text"
                 id="city"
                 name="city"
-                value={formData.city}
+                value={formData.address?.city}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
               />
@@ -265,7 +268,7 @@ const CustomerForm = ({
                 type="text"
                 id="canton"
                 name="canton"
-                value={formData.canton}
+                value={formData.address?.canton}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
               />
@@ -281,7 +284,7 @@ const CustomerForm = ({
                 type="text"
                 id="country"
                 name="country"
-                value={formData.country}
+                value={formData.address?.country}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
               />
