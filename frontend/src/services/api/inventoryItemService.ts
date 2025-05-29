@@ -2,20 +2,41 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BaseApiService } from "../baseApiService";
 import type { Entity, QueryParams } from "../types";
 
+type WeightUnit = "t" | "kg" | "g";
+type VolumeUnit = "l" | "cl" | "ml";
+type LengthUnit = "m" | "cm" | "mm";
+
+export interface IPrice {
+  mwst: "brutto" | "netto";
+  price: number;
+  mwstPercent?: number;
+  unit?: "Stück" | WeightUnit | VolumeUnit | LengthUnit;
+}
+
 export interface InventoryItem extends Entity {
   name: string;
+  shortName?: string;
   description?: string;
-  sku: string;
-  price: number;
-  cost?: number;
-  quantity: number;
-  category?: string;
-  imageUrl?: string;
+  type: "product" | "service";
+  price: IPrice;
+  allowAmountDecimal?: boolean;
+  imageURLs?: string[];
+  primaryImage?: number;
+  tags?: string[];
+  inStockStatus?: boolean;
+  properties?: {
+    [key: string]: string | number | boolean;
+  };
+  createdBy?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  orgId?: number;
+  state?: "active" | "deleted";
 }
 
 class InventoryItemService extends BaseApiService<InventoryItem> {
   constructor() {
-    super("inventory-items");
+    super("inventory/items");
   }
 }
 

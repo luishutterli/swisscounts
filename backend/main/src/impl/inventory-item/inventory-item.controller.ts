@@ -28,6 +28,9 @@ export async function createInventoryItem(
     return response.status(400).json({ error: "Invalid org ID" });
   }
   const itemData = request.body;
+
+  itemData.createdBy = 1; // TODO: Use userId from authentication middleware
+  
   const item = new InventoryItemModel({ ...itemData, orgId: org });
   const savedItem = await item.save();
   if (!savedItem) {

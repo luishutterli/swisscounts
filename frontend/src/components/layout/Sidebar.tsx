@@ -16,7 +16,7 @@ const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boole
     { path: "/", label: "Rechnungen", icon: TbFileInvoice },
     { path: "/customers", label: "Kunden", icon: LuUsers },
     { path: "/", label: "Gutscheine", icon: LuTag },
-    { path: "/", label: "Inventar", icon: LuShoppingBag },
+    { path: "/inventory", label: "Inventar", icon: LuShoppingBag },
     { path: "/", label: "Ausgaben", icon: FiDollarSign },
     { path: "/", label: "Einstellungen", icon: FiSettings },
   ];
@@ -43,7 +43,9 @@ const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boole
       </nav>
       {isOpen && (
         <div className="pb-4 text-center text-sm wrap-break-word">
-          <p>© {new Date().getFullYear()} SwissCounts <br/> <i>by Luis Hutterli</i></p>
+          <p>
+            © {new Date().getFullYear()} SwissCounts <br /> <i>by Luis Hutterli</i>
+          </p>
         </div>
       )}
     </div>
