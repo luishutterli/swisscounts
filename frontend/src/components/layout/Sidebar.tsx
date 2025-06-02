@@ -17,14 +17,14 @@ const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boole
     { path: "/customers", label: "Kunden", icon: LuUsers },
     { path: "/", label: "Gutscheine", icon: LuTag },
     { path: "/inventory", label: "Inventar", icon: LuShoppingBag },
-    { path: "/", label: "Ausgaben", icon: FiDollarSign },
+    { path: "/expenses", label: "Ausgaben", icon: FiDollarSign },
     { path: "/", label: "Einstellungen", icon: FiSettings },
   ];
 
   return (
-    <div className="h-full flex flex-col border-r px-2 border-gray-300">
+    <div className="flex flex-col px-2 border-gray-300 border-r h-full">
       <nav className="flex-1 py-4">
-        <ul className="list-none p-0 m-0">
+        <ul className="m-0 p-0 list-none">
           {navItems.map((item) => (
             <li key={item.label} className="mb-1">
               <Link
@@ -42,7 +42,7 @@ const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boole
         </ul>
       </nav>
       {isOpen && (
-        <div className="pb-4 text-center text-sm wrap-break-word">
+        <div className="pb-4 text-sm text-center wrap-break-word">
           <p>
             © {new Date().getFullYear()} SwissCounts <br /> <i>by Luis Hutterli</i>
           </p>

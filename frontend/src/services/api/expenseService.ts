@@ -5,10 +5,15 @@ import type { Entity, QueryParams } from "../types";
 export interface Expense extends Entity {
   description: string;
   amount: number;
+  category?: string;
   date: string;
-  category: string;
-  receipt?: string;
+  receiptImageURL?: string;
   notes?: string;
+  createdBy?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  orgId?: number;
+  state?: "active" | "deleted";
 }
 
 class ExpenseService extends BaseApiService<Expense> {

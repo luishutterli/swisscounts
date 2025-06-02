@@ -25,6 +25,9 @@ export async function createExpense(
     return response.status(400).json({ error: "Invalid org ID" });
   }
   const expenseData = request.body;
+
+  expenseData.createdBy = 1; // TODO: Use userId from authentication middleware
+
   const expense = new ExpenseModel({
     ...expenseData,
     orgId: org,
