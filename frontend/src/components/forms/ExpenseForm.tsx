@@ -102,7 +102,20 @@ const ExpenseForm = ({
   const categories = ["Warenaufwand", "Büromaterial", "Technik", "Steuern", "Sonstiges"];
 
   return (
-    <Modal isOpen={isOpen} onClose={onCancel} title={title}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onCancel}
+      title={title}
+      footer={
+        <div className="flex justify-end space-x-2 pt-4">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Abbrechen
+          </Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Wird gespeichert..." : "Speichern"}
+          </Button>
+        </div>
+      }>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
@@ -200,15 +213,6 @@ const ExpenseForm = ({
             onChange={handleChange}
             className="block shadow-sm mt-1 border-gray-300 focus:border-blue-500 rounded-md focus:ring-blue-500 w-full"
           />
-        </div>
-
-        <div className="flex justify-end space-x-3 mt-6">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Abbrechen
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Wird gespeichert..." : "Speichern"}
-          </Button>
         </div>
       </form>
     </Modal>
