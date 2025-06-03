@@ -26,6 +26,8 @@ export async function createCoupon(
   }
   const couponData = request.body;
 
+  couponData.createdBy = 1; // TODO: Use userId from authentication middleware
+
   const existingCoupon = await CouponModel.findOne({
     code: couponData.code,
     orgId: org,
