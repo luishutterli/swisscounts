@@ -20,3 +20,7 @@
 | GET        | /:org/expenses            | Alle Ausgaben auflisten                 |
 | POST       | /:org/expenses            | Eine neue Ausgabe erstellen             |
 | PATCH      | /:org/expenses/:id        | Eine Ausgabe ändern                     |
+
+# TODOs
+## Implementierung mit AuthKit
+- Sowie im frontend als auch im backend werden Stadartwerte für die Benutzer & Organisationsid verwendet

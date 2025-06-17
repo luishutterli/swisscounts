@@ -100,17 +100,19 @@ const couponSchema = new Schema<ICoupon, CouponModel, ICouponVirtuals>(
         },
       },
     ],
-
     // ---- "Gift Card" ----
     price: {
-      mwst: { type: String, enum: ["brutto", "netto"], required: true },
-      price: { type: Number, required: true },
-      mwstPercent: { type: Number, required: false },
-      unit: {
-        type: String,
-        enum: ["Stück", "t", "kg", "g", "l", "cl", "ml", "m", "cm", "mm"],
-        required: false,
+      type: {
+        mwst: { type: String, enum: ["brutto", "netto"], required: true },
+        price: { type: Number, required: true },
+        mwstPercent: { type: Number, required: false },
+        unit: {
+          type: String,
+          enum: ["Stück", "t", "kg", "g", "l", "cl", "ml", "m", "cm", "mm"],
+          required: false,
+        },
       },
+      required: false, // Make the entire price object optional
     },
     bookings: [
       {

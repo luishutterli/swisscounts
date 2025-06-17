@@ -15,7 +15,7 @@ const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boole
     { path: "/app", label: "Dashboard", icon: LuLayoutDashboard },
     { path: "/", label: "Rechnungen", icon: TbFileInvoice },
     { path: "/customers", label: "Kunden", icon: LuUsers },
-    { path: "/", label: "Gutscheine", icon: LuTag },
+    { path: "/coupons", label: "Gutscheine", icon: LuTag },
     { path: "/inventory", label: "Inventar", icon: LuShoppingBag },
     { path: "/expenses", label: "Ausgaben", icon: FiDollarSign },
     { path: "/", label: "Einstellungen", icon: FiSettings },

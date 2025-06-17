@@ -145,7 +145,7 @@ const InventoryItemForm = ({
     }
 
     if (formData.price.price <= 0) {
-      newErrors.price = "Preis muss größer als 0 sein";
+      newErrors.price = "Preis muss grösser als 0 sein";
     }
 
     setErrors(newErrors);
@@ -183,9 +183,9 @@ const InventoryItemForm = ({
         </div>
       }>
       <form className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
           <div className="col-span-1">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="name" className="block font-medium text-gray-700 text-sm">
               Name*
             </label>
             <input
@@ -200,13 +200,13 @@ const InventoryItemForm = ({
                   : "border-gray-300 focus:border-primary focus:ring-primary"
               }`}
             />
-            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+            {errors.name && <p className="mt-1 text-red-600 text-sm">{errors.name}</p>}
           </div>
 
           <div className="col-span-1">
             <label
               htmlFor="shortName"
-              className="block text-sm font-medium text-gray-700">
+              className="block font-medium text-gray-700 text-sm">
               Kurzer Name
             </label>
             <input
@@ -215,14 +215,14 @@ const InventoryItemForm = ({
               name="shortName"
               value={formData.shortName}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
+              className="block shadow-sm mt-1 py-2.5 border-gray-300 focus:border-primary rounded-md focus:ring-primary w-full h-11 sm:text-sm"
             />
           </div>
 
           <div className="col-span-2">
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700">
+              className="block font-medium text-gray-700 text-sm">
               Beschreibung
             </label>
             <textarea
@@ -231,12 +231,12 @@ const InventoryItemForm = ({
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              className="block shadow-sm mt-1 border-gray-300 focus:border-primary rounded-md focus:ring-primary w-full sm:text-sm"
             />
           </div>
 
           <div className="col-span-1">
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="type" className="block font-medium text-gray-700 text-sm">
               Typ*
             </label>
             <select
@@ -252,31 +252,31 @@ const InventoryItemForm = ({
               <option value="product">Produkt</option>
               <option value="service">Dienstleistung</option>
             </select>
-            {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type}</p>}
+            {errors.type && <p className="mt-1 text-red-600 text-sm">{errors.type}</p>}
           </div>
 
           <div className="col-span-1">
-            <div className="flex items-center h-full mt-4">
+            <div className="flex items-center mt-4 h-full">
               <input
                 type="checkbox"
                 id="inStockStatus"
                 name="inStockStatus"
                 checked={formData.inStockStatus}
                 onChange={handleChange}
-                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                className="border-gray-300 rounded focus:ring-primary w-4 h-4 text-primary"
               />
-              <label htmlFor="inStockStatus" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="inStockStatus" className="block ml-2 text-gray-700 text-sm">
                 Auf Lager
               </label>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-200 pt-4">
-          <h4 className="text-md font-medium">Preisgestaltung</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+        <div className="pt-4 border-gray-200 border-t">
+          <h4 className="font-medium text-md">Preisgestaltung</h4>
+          <div className="gap-4 grid grid-cols-1 md:grid-cols-3 mt-2">
             <div className="col-span-1">
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="price" className="block font-medium text-gray-700 text-sm">
                 Preis*
               </label>
               <input
@@ -294,12 +294,12 @@ const InventoryItemForm = ({
                 step="0.01"
               />
               {errors.price && (
-                <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+                <p className="mt-1 text-red-600 text-sm">{errors.price}</p>
               )}
             </div>
 
             <div className="col-span-1">
-              <label htmlFor="mwst" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="mwst" className="block font-medium text-gray-700 text-sm">
                 MWST
               </label>
               <select
@@ -307,11 +307,11 @@ const InventoryItemForm = ({
                 name="mwst"
                 value={formData.price.mwst}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11">
+                className="block shadow-sm mt-1 py-2.5 border-gray-300 focus:border-primary rounded-md focus:ring-primary w-full h-11 sm:text-sm">
                 <option value="brutto">Brutto (inkl. MWST)</option>
                 <option value="netto">Netto (exkl. MWST)</option>
               </select>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-gray-500 text-xs">
                 {formData.price.mwst === "brutto"
                   ? "Der angegebene Preis enthält bereits die MWST"
                   : "Der angegebene Preis ist ohne MWST, diese wird zusätzlich berechnet"}
@@ -321,7 +321,7 @@ const InventoryItemForm = ({
             <div className="col-span-1">
               <label
                 htmlFor="mwstPercent"
-                className="block text-sm font-medium text-gray-700">
+                className="block font-medium text-gray-700 text-sm">
                 MWST %
               </label>
               <input
@@ -330,14 +330,14 @@ const InventoryItemForm = ({
                 name="mwstPercent"
                 value={formData.price.mwstPercent}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
+                className="block shadow-sm mt-1 py-2.5 border-gray-300 focus:border-primary rounded-md focus:ring-primary w-full h-11 sm:text-sm"
                 min="0"
                 step="0.1"
               />
             </div>
 
             <div className="col-span-1">
-              <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="unit" className="block font-medium text-gray-700 text-sm">
                 Einheit
               </label>
               <select
@@ -345,7 +345,7 @@ const InventoryItemForm = ({
                 name="unit"
                 value={formData.price.unit || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11">
+                className="block shadow-sm mt-1 py-2.5 border-gray-300 focus:border-primary rounded-md focus:ring-primary w-full h-11 sm:text-sm">
                 <option value="">Keine Einheit</option>
                 <option value="Stück">Stück</option>
                 <option disabled>-- Gewicht --</option>
@@ -364,18 +364,18 @@ const InventoryItemForm = ({
             </div>
 
             <div className="col-span-1">
-              <div className="flex items-center h-full mt-4">
+              <div className="flex items-center mt-4 h-full">
                 <input
                   type="checkbox"
                   id="allowAmountDecimal"
                   name="allowAmountDecimal"
                   checked={formData.allowAmountDecimal}
                   onChange={handleChange}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  className="border-gray-300 rounded focus:ring-primary w-4 h-4 text-primary"
                 />
                 <label
                   htmlFor="allowAmountDecimal"
-                  className="ml-2 block text-sm text-gray-700">
+                  className="block ml-2 text-gray-700 text-sm">
                   Dezimalmengen erlauben
                 </label>
               </div>
@@ -383,8 +383,8 @@ const InventoryItemForm = ({
           </div>
         </div>
 
-        <div className="border-t border-gray-200 pt-4">
-          <h4 className="text-md font-medium">Tags</h4>
+        <div className="pt-4 border-gray-200 border-t">
+          <h4 className="font-medium text-md">Tags</h4>
           <div className="mt-2">
             <div className="flex">
               <input
@@ -394,20 +394,20 @@ const InventoryItemForm = ({
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagInputKeyDown}
                 placeholder="Tag hinzufügen..."
-                className="mt-1 block w-full rounded-l-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5 h-11"
+                className="block shadow-sm mt-1 py-2.5 border-gray-300 focus:border-primary rounded-l-md focus:ring-primary w-full h-11 sm:text-sm"
               />
               <button
                 type="button"
                 onClick={handleAddTag}
-                className="mt-1 inline-flex items-center px-4 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-700 sm:text-sm h-11">
+                className="inline-flex items-center bg-gray-50 mt-1 px-4 border border-gray-300 border-l-0 rounded-r-md h-11 text-gray-700 sm:text-sm">
                 Hinzufügen
               </button>
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mt-2">
               {formData.tags?.map((tag) => (
                 <div
                   key={tag}
-                  className="bg-primary/30 text-text px-3 py-1 rounded-full text-sm flex items-center">
+                  className="flex items-center bg-primary/30 px-3 py-1 rounded-full text-text text-sm">
                   {tag}
                   <button
                     type="button"
@@ -418,7 +418,7 @@ const InventoryItemForm = ({
                 </div>
               ))}
               {!formData.tags?.length && (
-                <p className="text-sm text-gray-500">Keine Tags vorhanden</p>
+                <p className="text-gray-500 text-sm">Keine Tags vorhanden</p>
               )}
             </div>
           </div>

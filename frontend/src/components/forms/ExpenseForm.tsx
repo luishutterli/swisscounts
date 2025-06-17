@@ -77,7 +77,7 @@ const ExpenseForm = ({
     }
 
     if (formData.amount <= 0) {
-      newErrors.amount = "Der Betrag muss größer als 0 sein";
+      newErrors.amount = "Der Betrag muss grösser als 0 sein";
     }
 
     if (!(formData.category ?? "").trim()) {

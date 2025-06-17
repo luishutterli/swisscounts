@@ -4,17 +4,52 @@ import type { Entity, QueryParams } from "../types";
 import { apiClient } from "../apiClient";
 import { getFullUrl } from "../apiConfig";
 
+export interface ICouponValue {
+  type: "percentage" | "fixed";
+  value: number;
+  maxDiscount?: number; // for percentage
+}
+
+export interface ICouponBooking {
+  amount: number;
+  usedAt: Date;
+  invoiceId?: string;
+}
+
+export interface ICouponUsage {
+  date: Date;
+  invoiceId: string;
+}
+
 export interface Coupon extends Entity {
   code: string;
+  name: string;
   description?: string;
-  discountType: "percentage" | "fixed";
-  discountValue: number;
-  minPurchase?: number;
+  value: ICouponValue;
+  status: "active" | "used" | "inactive";
   startDate?: string;
-  endDate?: string;
-  usageLimit?: number;
-  usageCount: number;
-  isActive: boolean;
+  expiryDate?: string;
+  minimumSpend?: number;
+  applicableItems?: string[];
+  stackable?: boolean;
+
+  // Discount specific
+  maxUses?: number;
+  maxUsesPerCustomer?: number;
+  used?: ICouponUsage[];
+
+  // Gift card specific
+  price?: {
+    price: number;
+    mwst: "brutto" | "netto";
+    mwstPercent?: number;
+    unit?: string;
+  };
+  bookings?: ICouponBooking[];
+  purchasedInvoiceId?: string;
+
+  createdBy?: number;
+  state: "active" | "deleted";
 }
 
 class CouponService extends BaseApiService<Coupon> {
@@ -47,6 +82,7 @@ export function useCoupon(id: string) {
   });
 }
 
+// Note: The backend doesn't have a validate endpoint yet, but we'll keep this for future use
 export function useValidateCoupon(code: string) {
   return useQuery({
     queryKey: COUPONS_KEYS.validate(code),
@@ -80,6 +116,8 @@ export function useUpdateCoupon() {
   });
 }
 
+// Note: The backend doesn't have delete functionality as per requirements
+// This is kept for future implementation but won't be used in the current version
 export function useDeleteCoupon() {
   const queryClient = useQueryClient();
 

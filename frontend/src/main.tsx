@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 import Customers from "./pages/Customers.tsx";
 import InventoryItems from "./pages/InventoryItems.tsx";
 import Expenses from "./pages/Expenses.tsx";
+import Coupons from "./pages/Coupons.tsx";
 import App from "./App.jsx";
 import { queryClient } from "./services/queryClient";
 import { ToastProvider } from "./context/ToastContext";
@@ -19,12 +20,12 @@ createRoot(rootElement).render(
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<App />} />
+          <Routes>            <Route path="/" element={<App />} />
             <Route path="/app" element={<Dashboard />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/inventory" element={<InventoryItems />} />
             <Route path="/expenses" element={<Expenses />} />
+            <Route path="/coupons" element={<Coupons />} />
           </Routes>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
