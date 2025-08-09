@@ -63,14 +63,32 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 // TODO: Only Development
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept",
+//   );
+
+//   next();
+// });
+
+// Middleware to check for authkit-validity
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept",
-  );
-  next();
+  const headerStr = req.headers["x-authkit-valid"];
+  if (headerStr === "true") {
+    next();
+    return;
+  }
+
+  console.error("[CRITICAL] Backend received request although X-AuthKit-Valid is not true! X-AuthKit-Valid:", headerStr);
+  res.status(401).json({
+    success: false,
+    error: {
+      message: "Unauthorized",
+    },
+  });
 });
 
 // Error handling middleware

@@ -1,0 +1,39 @@
+{
+  "name": "Swisscounts",
+  "jwtConfig": {
+    "issuer": "Swisscounts (AuthKit)",
+    "secret": "${JWT_SECRET}",
+    "expiresIn": "1h",
+    "algorithm": "HS256",
+    "jwtStorageLocation": "cookie",
+    "cookieName": "authkit_token",
+    "cookieOptions": {
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax",
+      "maxAge": 3600,
+      "path": "/"
+    },
+    "refreshExpiresIn": "7d",
+    "refreshCookieName": "authkit_refresh",
+    "refreshCookieOptions": {
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax",
+      "maxAge": 604800,
+      "path": "/"
+    }
+  },
+  "passwordHashAlgorithm": "SHA-512",
+  "passwordSaltLength": 32,
+  "enforceVerifiedEmail": false,
+  "databaseConfig": {
+    "type": "mysql",
+    "url": "${DB_HOST}",
+    "port": 3306,
+    "username": "${MYSQL_USER}",
+    "secret": "${MYSQL_PASSWORD}",
+    "database": "AuthKit"
+  },
+  "autoCreateSchema": true
+}

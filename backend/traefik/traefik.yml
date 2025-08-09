@@ -1,0 +1,18 @@
+entryPoints:
+  web:
+    address: ":80"
+
+api:
+  dashboard: true
+  insecure: true
+
+experimental:
+  localPlugins:
+    auth-kit-traefik:
+      moduleName: github.com/luishutterli/auth-kit-traefik
+
+providers:
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
+

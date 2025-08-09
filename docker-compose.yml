@@ -1,8 +1,10 @@
 services:
+  # Main
   main:
     build: ./backend/main/
-    ports:
-      - 3000:3000
+    hostname: main
+    env_file:
+      - ./backend/.env
     networks:
       - internal
     depends_on:
@@ -18,9 +20,47 @@ services:
     volumes:
       - db2_mongodb_data:/data/db
 
+
+
+  # AuthKit
+  authkit:
+    image: ghcr.io/luishutterli/auth-kit:main
+    hostname: authkit
+    volumes:
+      - ./backend/auth-kit/config.json:/auth-kit/config/config.json
+    env_file:
+      - ./backend/.env
+    networks:
+      - internal
+      - authkit_internal
+    depends_on:
+      - db1_mysql
+    
+  db1_mysql:
+    image: mysql:latest
+    hostname: db1_mysql
+    env_file:
+      - ./backend/.env
+    ports:
+      - 3306:3306 # Only for development
+    volumes:
+      - db1_mysql_data:/var/lib/mysql
+      - ./backend/auth-kit/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - authkit_internal
+
 networks:
   internal:
     driver: bridge
+  authkit_internal:
+    driver: bridge
+
 volumes:
+  db1_mysql_data:
+    driver: local
   db2_mongodb_data:
     driver: local
+
+
+include:
+  - ./backend/traefik/docker-compose.yml

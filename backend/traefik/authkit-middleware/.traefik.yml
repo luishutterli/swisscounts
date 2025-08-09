@@ -1,0 +1,11 @@
+type: middleware
+displayName: AuthKit Middleware
+summary: Middleware for validating & extracting AuthKit issued tokens
+
+import: github.com/luishutterli/auth-kit-traefik
+
+testData:
+  jwtCookieName: "authkit_jwt"
+  refreshCookieName: "authkit_refresh"
+  jwtSecret: "supersecretsecret"
+  jwtAlgorithm: "HS256"

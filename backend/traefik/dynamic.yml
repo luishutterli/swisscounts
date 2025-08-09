@@ -1,0 +1,44 @@
+http:
+  routers:
+    main-api-router:
+      rule: "PathPrefix(`/api`)"
+      service: main
+      middlewares:
+        - strip-api-prefix
+        - auth-kit-auth
+      entryPoints:
+        - web
+
+    authkit-router:
+      rule: "PathPrefix(`/auth`)"
+      service: authkit
+      middlewares:
+        - strip-api-prefix
+      entryPoints:
+        - web
+
+  middlewares:
+    strip-api-prefix:
+      stripPrefix:
+        prefixes:
+          - "/api"
+          - "/auth"
+
+    auth-kit-auth:
+      plugin:
+        auth-kit-traefik:
+          jwtCookieName: "authkit_token"
+          refreshCookieName: "authkit_refresh"
+          jwtSecret: "${JWT_SECRET}"
+          jwtAlgorithm: "HS256"
+
+  services:
+    main:
+      loadBalancer:
+        servers:
+          - url: "http://main:3000"
+
+    authkit:
+      loadBalancer:
+        servers:
+          - url: "http://authkit:6575"
