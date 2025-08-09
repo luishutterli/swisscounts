@@ -15,6 +15,7 @@ const Button = ({
   isLoading = false,
   leftIcon,
   rightIcon,
+  className = "",
   ...props
 }: ButtonProps) => {
   const baseClasses =
@@ -36,7 +37,7 @@ const Button = ({
 
   return (
     <button
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       disabled={isLoading}
       {...props}>
       {isLoading && (
