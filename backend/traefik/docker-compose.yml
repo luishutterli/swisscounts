@@ -1,0 +1,17 @@
+services:
+  traefik:
+    image: traefik:v3.5
+    container_name: traefik
+    env_file:
+      - ../.env
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./authkit-middleware:/plugins-local/src/github.com/luishutterli/auth-kit-traefik
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./dynamic.yml:/etc/traefik/dynamic.yml
+    networks:
+      - internal
+      - authkit_internal

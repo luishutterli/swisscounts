@@ -14,6 +14,7 @@ class ApiClient {
       baseURL: API_CONFIG.baseURL,
       timeout: API_CONFIG.timeout,
       headers: API_CONFIG.headers,
+      withCredentials: true,
     });
 
     this.setupInterceptors();
