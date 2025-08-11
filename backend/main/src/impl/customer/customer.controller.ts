@@ -14,8 +14,30 @@ export async function getCustomers(
   }
 
   const paginationOptions = getPaginationParams(request);
+  
+  // Extract search filter
+  const filter = request.query.filter as string;
+  let searchObj: Record<string, unknown> = {};
+  
+  if (filter) {
+    try {
+      const filterObj = JSON.parse(filter);
+      if (filterObj.search) {
+        const searchRegex = new RegExp(filterObj.search, 'i');
+        searchObj = {
+          $or: [
+            { name: searchRegex },
+            { surName: searchRegex },
+            { email: searchRegex }
+          ]
+        };
+      }
+    } catch (e) {
+      console.warn("Failed to parse filter:", filter);
+    }
+  }
 
-  const customers = await CustomerModel.find({ orgId: org });
+  const customers = await CustomerModel.find({ orgId: org, ...searchObj });
   const paginatedResult = paginateArray(customers, paginationOptions);
 
   response.json(paginatedResult);

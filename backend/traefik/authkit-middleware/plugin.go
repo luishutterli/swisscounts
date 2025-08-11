@@ -84,6 +84,12 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 }
 
 func (m *Middleware) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	// Handle preflight requests
+	if req.Method == http.MethodOptions {
+		m.next.ServeHTTP(rw, req)
+		return
+	}
+
 	ip := getIP(req)
 	req.Header.Set("X-IP", ip)
 

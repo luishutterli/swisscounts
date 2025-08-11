@@ -13,7 +13,7 @@ interface NavItem {
 const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boolean }) => {
   const navItems: NavItem[] = [
     { path: "/", label: "Dashboard", icon: LuLayoutDashboard },
-    { path: "/", label: "Rechnungen", icon: TbFileInvoice },
+    { path: "/invoices/list", label: "Rechnungen", icon: TbFileInvoice },
     { path: "/customers", label: "Kunden", icon: LuUsers },
     { path: "/coupons", label: "Gutscheine", icon: LuTag },
     { path: "/inventory", label: "Inventar", icon: LuShoppingBag },

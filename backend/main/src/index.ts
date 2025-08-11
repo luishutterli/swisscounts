@@ -5,6 +5,8 @@ import { inventoryItemRoutes } from "./impl/inventory-item/inventory-item.routes
 import { invoiceRoutes } from "./impl/invoice/invoice.routes";
 import { couponRoutes } from "./impl/coupon/coupon.routes";
 import { expenseRoutes } from "./impl/expense/expense.routes";
+import * as httpContext from "express-http-context";
+import cors from "cors";
 
 interface AppError extends Error {
   statusCode?: number;
@@ -60,36 +62,94 @@ app.use((req, res, next) => {
   res.setHeader("X-Powered-By", poweredText);
   next();
 });
+app.use(httpContext.middleware);
 app.use(express.json());
 
-// TODO: Only Development
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept",
-  );
-
-  next();
-});
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 // Middleware to check for authkit-validity
 app.use((req, res, next) => {
   const headerStr = req.headers["x-authkit-valid"];
-  if (headerStr === "true") {
-    next();
+  if (headerStr !== "true") {
+    console.error(
+      "[CRITICAL] Backend received request although X-AuthKit-Valid is not true! X-AuthKit-Valid:",
+      headerStr,
+    );
+    res.status(401).json({
+      success: false,
+      error: {
+        message: "Unauthorized",
+      },
+    });
     return;
   }
 
-  console.error("[CRITICAL] Backend received request although X-AuthKit-Valid is not true! X-AuthKit-Valid:", headerStr);
-  res.status(401).json({
-    success: false,
-    error: {
-      message: "Unauthorized",
-    },
-  });
+  const userStr = req.headers["x-authkit-user"];
+  if (!userStr || typeof userStr !== "string") {
+    console.error(
+      "[CRITICAL] Backend received request without X-AuthKit-User! X-AuthKit-User:",
+      userStr,
+    );
+    res.status(401).json({
+      success: false,
+      error: {
+        message: "Unauthorized",
+      },
+    });
+    return;
+  }
+
+  // biome-ignore lint/suspicious/noExplicitAny:
+  let userObj: any;
+  try {
+    userObj = JSON.parse(userStr);
+  } catch (err) {
+    console.error(
+      "[CRITICAL] Backend received request with invalid X-AuthKit-User! X-AuthKit-User:",
+      userStr,
+    );
+    res.status(401).json({
+      success: false,
+      error: {
+        message: "Unauthorized",
+      },
+    });
+    return;
+  }
+
+  // Validate userObj
+  if (
+    !(
+      userObj?.id &&
+      userObj?.email &&
+      userObj?.name &&
+      userObj?.surname &&
+      userObj.emailVerified !== undefined &&
+      userObj?.createdAt
+    )
+  ) {
+    console.error(
+      "[CRITICAL] Backend received request with incomplete X-AuthKit-User! X-AuthKit-User:",
+      userObj,
+    );
+    res.status(401).json({
+      success: false,
+      error: {
+        message: "Unauthorized",
+      },
+    });
+    return;
+  }
+
+  httpContext.set("user", userObj);
+  httpContext.set("userId", userObj.id);
+
+  next();
 });
 
 // Error handling middleware
