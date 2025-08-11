@@ -9,16 +9,16 @@ interface LayoutProps {
 }
 
 const Layout = ({ name, children, actions }: LayoutProps) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen] = useState(true);
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col bg-white h-screen">
       <Header actions={actions} />
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} selected={name} />
 
-        <main className="flex-1 p-2 overflow-auto bg-background">
+        <main className="flex-1 bg-background p-2 overflow-auto">
           <div className="container">{children}</div>
         </main>
       </div>

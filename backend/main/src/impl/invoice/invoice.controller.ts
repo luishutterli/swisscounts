@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import InvoiceModel from "./invoice.model";
+import CouponModel from "../coupon/coupon.model";
 import { getPaginationParams, paginateArray } from "../../util/pagination";
+import * as httpContext from "express-http-context";
 
 export async function getInvoices(request: Request<{ org: string }>, response: Response) {
   const org = Number.parseInt(request.params.org);
@@ -12,7 +14,8 @@ export async function getInvoices(request: Request<{ org: string }>, response: R
 
   const invoices = await InvoiceModel.find({ orgId: org, state: "active" })
     .populate("customerId")
-    .populate("positions.inventoryItemId");
+    .populate("positions.inventoryItemId")
+    .populate("appliedCoupons.couponId");
 
   const paginatedResult = paginateArray(invoices, paginationOptions);
 
@@ -30,7 +33,8 @@ export async function getInvoiceById(
   const id = request.params.id;
   const invoice = await InvoiceModel.findOne({ _id: id, orgId: org, state: "active" })
     .populate("customerId")
-    .populate("positions.inventoryItemId");
+    .populate("positions.inventoryItemId")
+    .populate("appliedCoupons.couponId");
 
   if (!invoice) {
     return response.status(404).json({ error: "Invoice not found" });
@@ -47,6 +51,13 @@ export async function createInvoice(
     return response.status(400).json({ error: "Invalid org ID" });
   }
   const invoiceData = request.body;
+
+  const userId = httpContext.get("userId");
+  if (!userId) {
+    console.error("[ERROR] userId could not be inferred from context.");
+    return response.status(401).json({ error: "Unauthorized" });
+  }
+  invoiceData.createdBy = userId;
 
   const lastInvoice = await InvoiceModel.findOne({ orgId: org })
     .sort({ invoiceId: -1 })
@@ -65,6 +76,24 @@ export async function createInvoice(
   if (!savedInvoice) {
     return response.status(400).json({ error: "Failed to create invoice" });
   }
+
+  if (invoiceData.appliedCoupons && invoiceData.appliedCoupons.length > 0) {
+    try {
+      for (const appliedCoupon of invoiceData.appliedCoupons) {
+        await CouponModel.findByIdAndUpdate(appliedCoupon.couponId, {
+          $push: {
+            used: {
+              date: appliedCoupon.appliedAt,
+              invoiceId: savedInvoice._id,
+            },
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error tracking coupon usage:", error);
+    }
+  }
+
   response.status(201).json(savedInvoice);
 }
 

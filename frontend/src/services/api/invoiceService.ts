@@ -2,26 +2,64 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BaseApiService } from "../baseApiService";
 import type { Entity, QueryParams } from "../types";
 
-export interface InvoiceItem {
-  id?: string;
-  description: string;
-  quantity: number;
-  unitPrice: number;
+export interface IInvoicePrice {
+  mwst: "brutto" | "netto";
+  price: number;
+  mwstPercent?: number;
+  unit?: "Stück" | "t" | "kg" | "g" | "l" | "cl" | "ml" | "m" | "cm" | "mm";
+}
+
+export interface IInvoicePosition {
+  positionId: number;
   amount: number;
-  itemId?: string;
+  settledPrice: IInvoicePrice;
+  inventoryItemId?: string;
+  customItem?: {
+    name: string;
+    description?: string;
+  };
+}
+
+export interface IPaymentInformation {
+  paidAt: string;
+  paymentMethod: "cash" | "twint" | "other";
+  paymentStatus: "pending" | "completed" | "failed";
+  transactionId?: string;
+  paymentDetails?: { [key: string]: string | number | boolean };
+}
+
+export interface IAppliedCoupon {
+  couponId: string;
+  appliedAt: string;
+  discountApplied: number;
+}
+
+export interface IInvoiceAddress {
+  street?: string;
+  city?: string;
+  canton?: string;
+  postalCode?: string;
+  country?: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface Invoice extends Entity {
-  invoiceNumber: string;
+  invoiceId: number;
   customerId: string;
-  status: "draft" | "sent" | "paid" | "overdue" | "cancelled";
-  issueDate: string;
-  dueDate: string;
-  totalAmount: number;
-  taxAmount?: number;
-  subtotal: number;
+  description?: string;
+  text?: string;
   notes?: string;
-  items: InvoiceItem[];
+  positions: IInvoicePosition[];
+  appliedCoupons?: IAppliedCoupon[];
+  paymentInformation?: IPaymentInformation;
+  issuedAt: string;
+  dueAt: string;
+  status: "draft" | "sent" | "viewed" | "paid" | "overdue" | "canceled";
+  billingAddress?: IInvoiceAddress;
+  shippingAddress?: IInvoiceAddress;
+  createdBy?: number;
+  state?: "active" | "deleted";
 }
 
 class InvoiceService extends BaseApiService<Invoice> {

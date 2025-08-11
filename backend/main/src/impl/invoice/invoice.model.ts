@@ -3,13 +3,19 @@ import type { IPrice } from "../inventory-item/inventory-item.model";
 import type { IAddress } from "../customer/customer.model";
 
 interface IPaymentInformation {
-  paidAt: Date;
-  paymentMethod: "cash" | "twint" | "other";
-  paymentStatus: "pending" | "completed" | "failed";
+  paidAt?: Date;
+  paymentMethod?: "cash" | "twint" | "other";
+  paymentStatus?: "pending" | "completed" | "failed";
   transactionId?: string;
   paymentDetails?: {
     [key: string]: string | number | boolean;
   };
+}
+
+interface IAppliedCoupon {
+  couponId: Schema.Types.ObjectId;
+  appliedAt: Date;
+  discountApplied: number;
 }
 
 interface IInvoicePosition {
@@ -34,7 +40,7 @@ interface IInvoice {
   description?: string;
   text?: string;
   notes?: string; // Internal
-  // TODO: Coupons
+  appliedCoupons?: IAppliedCoupon[];
   positions: IInvoicePosition[];
   paymentInformation?: IPaymentInformation;
   issuedAt: Date;
@@ -56,6 +62,13 @@ const invoiceSchema = new Schema<IInvoice>(
     description: { type: String, required: false },
     text: { type: String, required: false },
     notes: { type: String, required: false },
+    appliedCoupons: [
+      {
+        couponId: { type: Schema.Types.ObjectId, ref: "Coupons", required: true },
+        appliedAt: { type: Date, required: true },
+        discountApplied: { type: Number, required: true },
+      },
+    ],
     positions: [
       {
         positionId: { type: Number, required: true },
@@ -82,16 +95,16 @@ const invoiceSchema = new Schema<IInvoice>(
       },
     ],
     paymentInformation: {
-      paidAt: { type: Date, required: true },
+      paidAt: { type: Date, required: false },
       paymentMethod: {
         type: String,
         enum: ["cash", "twint", "other"],
-        required: true,
+        required: false,
       },
       paymentStatus: {
         type: String,
         enum: ["pending", "completed", "failed"],
-        required: true,
+        required: false,
       },
       transactionId: { type: String, required: false },
       paymentDetails: {

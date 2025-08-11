@@ -14,7 +14,34 @@ export async function getInventoryItems(
 
   const paginationOptions = getPaginationParams(request);
 
-  const items = await InventoryItemModel.find({ orgId: org, state: "active" });
+  // Extract search filter
+  const filter = request.query.filter as string;
+  let searchObj: Record<string, unknown> = {};
+
+  if (filter) {
+    try {
+      const filterObj = JSON.parse(filter);
+      if (filterObj.search) {
+        const searchRegex = new RegExp(filterObj.search, "i");
+        searchObj = {
+          $or: [
+            { name: searchRegex },
+            { shortName: searchRegex },
+            { description: searchRegex },
+            { tags: { $in: [searchRegex] } },
+          ],
+        };
+      }
+    } catch (e) {
+      console.warn("Failed to parse filter:", filter);
+    }
+  }
+
+  const items = await InventoryItemModel.find({
+    orgId: org,
+    state: "active",
+    ...searchObj,
+  });
   const paginatedResult = paginateArray(items, paginationOptions);
 
   response.json(paginatedResult);
