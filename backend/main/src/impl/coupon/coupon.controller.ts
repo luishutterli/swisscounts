@@ -2,16 +2,13 @@ import type { Request, Response } from "express";
 import CouponModel from "./coupon.model";
 import { getPaginationParams, paginateArray } from "../../util/pagination";
 
-// Utility function to validate and sanitize coupon code
 const validateAndSanitizeCouponCode = (code: string): { isValid: boolean; sanitizedCode: string; error?: string } => {
   if (!code || typeof code !== "string") {
     return { isValid: false, sanitizedCode: "", error: "Coupon code is required" };
   }
   
-  // Sanitize: convert to lowercase and remove invalid characters
   const sanitizedCode = code.toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/\s+/g, "");
   
-  // Validate: check if it contains only allowed characters
   const validPattern = /^[a-z0-9-]+$/;
   if (!validPattern.test(sanitizedCode)) {
     return { isValid: false, sanitizedCode, error: "Coupon code can only contain lowercase letters, numbers, and dashes" };
@@ -24,12 +21,10 @@ const validateAndSanitizeCouponCode = (code: string): { isValid: boolean; saniti
   return { isValid: true, sanitizedCode };
 };
 
-// Utility function to validate gift card data
 const validateGiftCardData = (couponData: {
   price?: { price: number };
   value?: { value: number };
 }): { isValid: boolean; error?: string } => {
-  // Check if this is a gift card (has price field)
   if (!couponData.price) {
     return { isValid: true }; // Not a gift card, skip validation
   }
@@ -61,7 +56,6 @@ const validateGiftCardData = (couponData: {
   return { isValid: true };
 };
 
-// Utility function to validate coupon data
 const validateCouponData = (couponData: {
   value?: { type: string; value: number; maxDiscount?: number };
   minimumSpend?: number;
@@ -133,19 +127,16 @@ export async function createCoupon(
   }
   const couponData = request.body;
 
-  // Validate and sanitize coupon code
   const codeValidation = validateAndSanitizeCouponCode(couponData.code);
   if (!codeValidation.isValid) {
     return response.status(400).json({ error: codeValidation.error });
   }  couponData.code = codeValidation.sanitizedCode;
 
-  // Validate gift card data
   const giftCardValidation = validateGiftCardData(couponData);
   if (!giftCardValidation.isValid) {
     return response.status(400).json({ error: giftCardValidation.error });
   }
 
-  // Validate general coupon data
   const couponValidation = validateCouponData(couponData);
   if (!couponValidation.isValid) {
     return response.status(400).json({ error: couponValidation.error });
