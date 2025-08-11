@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { FiDollarSign, FiSettings } from "react-icons/fi";
-import { LuLayoutDashboard, LuUsers, LuTag, LuShoppingBag } from "react-icons/lu";
+import { LuLayoutDashboard, LuUsers, LuTag, LuShoppingBag, LuCalculator } from "react-icons/lu";
 import { TbFileInvoice } from "react-icons/tb";
 import type { IconType } from "react-icons";
 
@@ -18,6 +18,7 @@ const Sidebar = ({ selected, isOpen = true }: { selected: string; isOpen?: boole
     { path: "/coupons", label: "Gutscheine", icon: LuTag },
     { path: "/inventory", label: "Inventar", icon: LuShoppingBag },
     { path: "/expenses", label: "Ausgaben", icon: FiDollarSign },
+    { path: "/bookkeeping", label: "Buchhaltung", icon: LuCalculator },
     { path: "/", label: "Einstellungen", icon: FiSettings },
   ];
 

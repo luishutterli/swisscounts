@@ -5,6 +5,7 @@ import { inventoryItemRoutes } from "./impl/inventory-item/inventory-item.routes
 import { invoiceRoutes } from "./impl/invoice/invoice.routes";
 import { couponRoutes } from "./impl/coupon/coupon.routes";
 import { expenseRoutes } from "./impl/expense/expense.routes";
+import { bookkeepingRoutes } from "./impl/bookkeeping/bookkeeping.routes";
 import * as httpContext from "express-http-context";
 import cors from "cors";
 
@@ -197,6 +198,7 @@ app.use(`${base}/:org/inventory/items/`, inventoryItemRoutes);
 app.use(`${base}/:org/invoices/`, invoiceRoutes);
 app.use(`${base}/:org/coupons/`, couponRoutes);
 app.use(`${base}/:org/expenses/`, expenseRoutes);
+app.use(`${base}/:org/bookkeeping/`, bookkeepingRoutes);
 
 app.get("/", (req, res) => {
   res.send(poweredText);

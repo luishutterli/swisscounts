@@ -64,6 +64,21 @@ export async function createInvoice(
     .select("invoiceId");
   const newInvoiceId = (lastInvoice?.invoiceId ?? 0) + 1;
 
+  if (invoiceData.positions && Array.isArray(invoiceData.positions)) {
+    console.log("Processing positions for new invoice creation");
+    invoiceData.positions = invoiceData.positions.map((position: unknown) => {
+      const processedPosition = { ...(position as Record<string, unknown>) };
+      
+      if (processedPosition.inventoryItemId && typeof processedPosition.inventoryItemId === 'object') {
+        const inventoryItem = processedPosition.inventoryItemId as Record<string, unknown>;
+        console.log("Converting populated inventoryItemId to ObjectId in new invoice:", inventoryItem._id || inventoryItem.id);
+        processedPosition.inventoryItemId = inventoryItem._id || inventoryItem.id;
+      }
+      
+      return processedPosition;
+    });
+  }
+
   const invoice = new InvoiceModel({
     ...invoiceData,
     orgId: org,
@@ -129,7 +144,41 @@ export async function updateInvoice(
 
   for (const key of Object.keys(invoiceData)) {
     if (invoiceData[key] === undefined || !allowedFields.includes(key)) continue;
-    invoice.set(key, invoiceData[key]);
+    
+    // Special handling for status change to "paid" - automatically set payment information
+    if (key === "status" && invoiceData[key] === "paid") {
+      console.log("Invoice status changed to paid, setting paymentInformation.paidAt");
+      
+      // If paymentInformation doesn't exist or paidAt is not set, set it now
+      const currentPaymentInfo = invoice.paymentInformation || {};
+      if (!currentPaymentInfo.paidAt) {
+        invoice.set("paymentInformation", {
+          ...currentPaymentInfo,
+          paidAt: new Date(),
+          paymentStatus: "completed"
+        });
+      }
+    }
+    
+    // Special handling for positions to ensure inventoryItemId is just the ObjectId
+    if (key === "positions" && Array.isArray(invoiceData[key])) {
+      console.log("Processing positions for invoice update");
+      const processedPositions = invoiceData[key].map((position: unknown) => {
+        const processedPosition = { ...(position as Record<string, unknown>) };
+        
+        // If inventoryItemId is an object (populated), extract just the _id
+        if (processedPosition.inventoryItemId && typeof processedPosition.inventoryItemId === 'object') {
+          const inventoryItem = processedPosition.inventoryItemId as Record<string, unknown>;
+          console.log("Converting populated inventoryItemId to ObjectId:", inventoryItem._id || inventoryItem.id);
+          processedPosition.inventoryItemId = inventoryItem._id || inventoryItem.id;
+        }
+        
+        return processedPosition;
+      });
+      invoice.set(key, processedPositions);
+    } else {
+      invoice.set(key, invoiceData[key]);
+    }
   }
   invoice.updatedAt = new Date();
 

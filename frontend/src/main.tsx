@@ -12,6 +12,7 @@ import Expenses from "./pages/Expenses.tsx";
 import Coupons from "./pages/Coupons.tsx";
 import InvoiceList from "./pages/InvoiceList.tsx";
 import Invoices from "./pages/Invoices.tsx";
+import Bookkeeping from "./pages/Bookkeeping.tsx";
 import { queryClient } from "./services/queryClient";
 import { ToastProvider } from "./context/ToastContext";
 import LoginPage from "./components/auth/LoginPage";
@@ -35,6 +36,7 @@ createRoot(rootElement).render(
               <Route path="/inventory" element={<InventoryItems />} />
               <Route path="/expenses" element={<Expenses />} />
               <Route path="/coupons" element={<Coupons />} />
+              <Route path="/bookkeeping" element={<Bookkeeping />} />
               <Route path="/invoices/list" element={<InvoiceList />} />
               <Route path="/invoices/new" element={<Invoices />} />
               <Route path="/invoices/:id/edit" element={<Invoices />} />
