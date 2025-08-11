@@ -7,14 +7,17 @@
     "start": "bun ./src/index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@types/express": "^5.0.1",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-http-context": "^2.0.1",
     "mongoose": "^8.14.0",
     "swisscounts-main-service": "file:"
   }

@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import CouponModel from "./coupon.model";
 import { getPaginationParams, paginateArray } from "../../util/pagination";
+import * as httpContext from "express-http-context";
 
 const validateAndSanitizeCouponCode = (code: string): { isValid: boolean; sanitizedCode: string; error?: string } => {
   if (!code || typeof code !== "string") {
@@ -142,7 +143,12 @@ export async function createCoupon(
     return response.status(400).json({ error: couponValidation.error });
   }
 
-  couponData.createdBy = 1; // TODO: Use userId from authentication middleware
+  const userId = httpContext.get("userId");
+  if (!userId) {
+    console.error("[ERROR] userId could not be inferred from context.");
+    return response.status(401).json({ error: "Unauthorized" });
+  }
+  couponData.createdBy = userId;
 
   const existingCoupon = await CouponModel.findOne({
     code: couponData.code,

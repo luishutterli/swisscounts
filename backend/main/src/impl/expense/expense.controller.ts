@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import ExpenseModel from "./expense.model";
 import { getPaginationParams, paginateArray } from "../../util/pagination";
+import * as httpContext from "express-http-context";
 
 export async function getExpenses(request: Request<{ org: string }>, response: Response) {
   const org = Number.parseInt(request.params.org);
@@ -26,7 +27,12 @@ export async function createExpense(
   }
   const expenseData = request.body;
 
-  expenseData.createdBy = 1; // TODO: Use userId from authentication middleware
+  const userId = httpContext.get("userId");
+  if (!userId) {
+    console.error("[ERROR] userId could not be inferred from context.");
+    return response.status(401).json({ error: "Unauthorized" });
+  }
+  expenseData.createdBy = userId;
 
   const expense = new ExpenseModel({
     ...expenseData,

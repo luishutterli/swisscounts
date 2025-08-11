@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import InventoryItemModel from "./inventory-item.model";
 import { getPaginationParams, paginateArray } from "../../util/pagination";
+import * as httpContext from "express-http-context";
 
 export async function getInventoryItems(
   request: Request<{ org: string }>,
@@ -29,8 +30,13 @@ export async function createInventoryItem(
   }
   const itemData = request.body;
 
-  itemData.createdBy = 1; // TODO: Use userId from authentication middleware
-  
+  const userId = httpContext.get("userId");
+  if (!userId) {
+    console.error("[ERROR] userId could not be inferred from context.");
+    return response.status(401).json({ error: "Unauthorized" });
+  }
+  itemData.createdBy = userId;
+
   const item = new InventoryItemModel({ ...itemData, orgId: org });
   const savedItem = await item.save();
   if (!savedItem) {
