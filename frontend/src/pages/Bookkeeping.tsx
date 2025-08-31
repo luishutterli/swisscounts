@@ -260,7 +260,7 @@ const Bookkeeping = () => {
     <Layout name="Buchhaltung">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="font-bold text-gray-900 text-2xl">Buchhaltung</h1>
+          <h1 className="font-semibold text-gray-900 text-2xl">Buchhaltung</h1>
           <p className="mt-1 text-gray-600 text-sm">
             Übersicht über alle Einnahmen und Ausgaben
           </p>

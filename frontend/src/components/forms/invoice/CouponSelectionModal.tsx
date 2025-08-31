@@ -198,13 +198,6 @@ const CouponSelectionModal = ({
             </div>
           </div>
         )}
-
-        {/* Actions */}
-        <div className="flex justify-end space-x-3 pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
-            Schliessen
-          </Button>
-        </div>
       </div>
     </Modal>
   );

@@ -78,7 +78,7 @@ const InventoryItems = () => {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="text-center py-8 flex flex-col items-center justify-center">
+        <div className="flex flex-col justify-center items-center py-8 text-center">
           <Spinner size="lg" />
           <p className="mt-2 text-gray-500">Inventarartikel werden geladen...</p>
         </div>
@@ -86,7 +86,7 @@ const InventoryItems = () => {
     }
     if (error) {
       return (
-        <div className="text-center py-8 text-red-500">
+        <div className="py-8 text-red-500 text-center">
           Fehler beim Laden der Inventarartikel
         </div>
       );
@@ -94,26 +94,26 @@ const InventoryItems = () => {
 
     return (
       <>
-        <div className="overflow-x-auto rounded-lg border border-gray-300">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="border border-gray-300 rounded-lg overflow-x-auto">
+          <table className="divide-y divide-gray-200 min-w-full">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 font-medium text-gray-500 text-xs text-left uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 font-medium text-gray-500 text-xs text-left uppercase tracking-wider">
                   Typ
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 font-medium text-gray-500 text-xs text-left uppercase tracking-wider">
                   Bruttopreis
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 font-medium text-gray-500 text-xs text-left uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 font-medium text-gray-500 text-xs text-left uppercase tracking-wider">
                   Tags
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 font-medium text-gray-500 text-xs text-left uppercase tracking-wider">
                   Aktionen
                 </th>
               </tr>
@@ -121,7 +121,7 @@ const InventoryItems = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {data?.data.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center py-4">
+                  <td colSpan={6} className="py-4 text-center">
                     Keine Inventarartikel gefunden
                   </td>
                 </tr>
@@ -129,9 +129,9 @@ const InventoryItems = () => {
               {data?.data.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium">{item.name}</div>
+                    <div className="font-medium text-sm">{item.name}</div>
                     {item.shortName && (
-                      <div className="text-xs text-gray-500">{item.shortName}</div>
+                      <div className="text-gray-500 text-xs">{item.shortName}</div>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -146,7 +146,7 @@ const InventoryItems = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm">{formatPrice(item)}</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-gray-500 text-xs">
                       Brutto
                       {item.price.mwstPercent !== undefined &&
                         ` (MWST: ${item.price.mwstPercent}%)`}
@@ -168,14 +168,14 @@ const InventoryItems = () => {
                       {item.tags?.map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-0.5 text-xs rounded-full bg-gray-100">
+                          className="bg-gray-100 px-2 py-0.5 rounded-full text-xs">
                           {tag}
                         </span>
                       ))}
                       {!item.tags?.length && <span className="text-gray-400">-</span>}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap space-x-2">
+                  <td className="space-x-2 px-6 py-4 whitespace-nowrap">
                     <Button variant="outline" onClick={() => openModal(item)}>
                       Bearbeiten
                     </Button>
@@ -190,8 +190,8 @@ const InventoryItems = () => {
             </tbody>
           </table>
         </div>
-        <div className="mt-4 flex justify-between items-center">
-          <div className="text-sm text-gray-500">
+        <div className="flex justify-between items-center mt-4">
+          <div className="text-gray-500 text-sm">
             Seite {page} von{" "}
             {data?.total ? Math.ceil(data.total / (data.limit ?? 10)) : 1}
           </div>
@@ -215,8 +215,8 @@ const InventoryItems = () => {
   return (
     <Layout name="Inventar">
       <div className="p-4 md:p-6">
-        <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Inventarartikel</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="font-semibold text-gray-900 text-2xl">Inventarartikel</h1>
           <Button onClick={() => openModal()}>Neuer Artikel</Button>
         </div>
 

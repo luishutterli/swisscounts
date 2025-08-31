@@ -234,7 +234,7 @@ const Coupons = () => {
     <Layout name="Gutscheine">
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="font-bold text-2xl">Gutscheine und Geschenkkarten</h1>
+          <h1 className="font-semibold text-gray-900 text-2xl">Gutscheine und Geschenkkarten</h1>
           <Button onClick={() => openModal()} leftIcon={<FiTag />}>
             Neuen Gutschein erstellen
           </Button>
